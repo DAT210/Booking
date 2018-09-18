@@ -1,3 +1,1 @@
-# Booking
-
-Group 1
+# Documentation files (alternatively `doc`)
