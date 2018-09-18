@@ -1,3 +1,1 @@
-# Booking
-
-Compiled files
+# Compiled files
