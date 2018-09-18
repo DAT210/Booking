@@ -1,3 +1,1 @@
-# Booking
-
-Group 1
+# Automated tests (alternatively `spec` or `tests`)
