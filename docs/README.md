@@ -1,1 +1,1 @@
-# Documentation files (alternatively `doc`)
+# Documentation files
