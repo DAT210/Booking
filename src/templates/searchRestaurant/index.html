@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Front page
+{% endblock %}
+
+
+{% block script %}
+    {{ super()}}
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script>
+        function initialize() {
+            var locStavanger = new google.maps.LatLng(58.9700, 5.7331);
+            var mapProp = {
+                center: locStavanger,
+                zoom: 5,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+            // marker for Stavanger
+            var marker = new google.maps.Marker({
+                position: locStavanger
+            });
+            marker.setMap(map);
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+{% endblock %}
+
+
+{% block content %}
+<div id="main">
+    <h1>Some content</h1>
+    <div id="googleMap" style="width:500px;height:380px;"></div>
+</div>
+{% endblock %}
