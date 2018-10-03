@@ -1,18 +1,13 @@
-{% extends "base.html" %}
+{% extends "layout.html" %}
 
 {% block title %}
 Choose date and time
 {% endblock %}
 
-
-{% block script %}
-
-{% endblock %}
-
-
 {% block content %}
+<br><br><br><br>
 
-<form action="{{ url_for("dateAndTimeConfirmed") }}" method="POST">
+<form action="{{ url_for("dateTimeTable.dateAndTimeConfirmed") }}" method="POST">
     <input type="date" name="theDate">
     <input type="time" name="theTime">
     <input type="submit" name="setDateAndTime" value="Continue booking">

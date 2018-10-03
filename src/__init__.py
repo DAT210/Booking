@@ -1,12 +1,10 @@
 from flask import Flask
 from views.searchRestaurant import searchRestaurant
-from views.dateTimeTable import dateAndTime
-from views.dateTimeTable import dateAndTimeConfirmed
+from views.dateTimeTable import dateTimeTable
 
 app = Flask(__name__)
 app.register_blueprint(searchRestaurant)
-app.register_blueprint(dateAndTime)
-app.register_blueprint(dateAndTimeConfirmed)
+app.register_blueprint(dateTimeTable)
 
 app.debug = True
 
