@@ -33,4 +33,9 @@ Front page
     <h1>Some content</h1>
     <div id="googleMap" style="width:500px;height:380px;"></div>
 </div>
+
+<br>
+
+<form action="{{ url_for('dateTimeTable.dateAndTime') }}">
+        <input type="submit" name="chooseDateAndTime" value="Continue booking">
 {% endblock %}
