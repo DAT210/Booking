@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Front page
+Choose date and time
 {% endblock %}
 
 
@@ -11,6 +11,10 @@ Front page
 
 
 {% block content %}
-<h1>Some content</h1>
-<div id="googleMap" style="width:500px;height:380px;"></div>
+
+<form action="{{ url_for("dateAndTimeConfirmed") }}" method="POST">
+    <input type="date" name="theDate">
+    <input type="time" name="theTime">
+    <input type="submit" name="setDateAndTime" value="Continue booking">
+
 {% endblock %}
