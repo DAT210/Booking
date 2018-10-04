@@ -6,6 +6,7 @@ dateTimeTable = Blueprint('dateTimeTable', __name__)
 @dateTimeTable.route("/dateAndTime")
 def dateAndTime():
     return render_template('dateTimeTable/index.html')
+    
 
 @dateTimeTable.route('/dateAndTimeConfirmed', methods=["POST"])
 def dateAndTimeConfirmed():
