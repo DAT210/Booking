@@ -12,8 +12,8 @@ app.debug = True
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="root",
-    database="booking_db"
+    passwd="yourpwhere",
+    database="yourdbhere"
 )
 app.config.from_mapping(DATABASE=mydb,)
 if __name__ == '__main__':
