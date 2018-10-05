@@ -5,7 +5,11 @@ Choose date and time
 {% endblock %}
 
 {% block content %}
-<br><br><br><br><br><br><br><br>
+<h5>Restaurant: {% if restaurant is defined %}{{restaurant}}{% endif %}</h5>
+<h5><address>Address: {% if address is defined %}{{address}}{% endif %}</address></h5>
+<h5>Telephone: {% if telephone is defined %}{{telephone}}{% endif %}</h5>
+
+<br>
 
 <form action="{{ url_for('dateTimeTable.dateAndTimeConfirmed') }}" method="POST">
     <input type="date" name="theDate">
