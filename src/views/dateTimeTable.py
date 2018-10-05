@@ -3,10 +3,12 @@ from flask import Blueprint, render_template, request
 dateTimeTable = Blueprint('dateTimeTable', __name__)
 
 
-@dateTimeTable.route("/dateAndTime")
+@dateTimeTable.route("/dateAndTime", methods=["POST"])
 def dateAndTime():
-    return render_template('dateTimeTable/index.html', restaurant="NameOfRestaurant", 
-    address="Address", telephone="Tel")
+    global theRestaurant
+    theRestaurant = request.form["theRestaurant"]
+    return render_template('dateTimeTable/chooseDate.html', restaurant=theRestaurant, 
+    address="Stavanger", telephone="555 55 555")
     
 
 @dateTimeTable.route('/dateAndTimeConfirmed', methods=["POST"])
@@ -14,11 +16,6 @@ def dateAndTimeConfirmed():
     theDate = request.form["theDate"]
     theTime = request.form["theTime"]
 
-    if(theDate == ""):
-        print("Date not set!")
-        return render_template('dateTimeTable/index.html', err="Date not set!")
-    if(theTime == ""):
-        print("Time not set!")
-        return render_template('dateTimeTable/index.html', err="Time not set!")
 
-    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime)
+
+    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime, theRestaurant=theRestaurant)
