@@ -1,6 +1,6 @@
 from flask import Flask
-from src.views.searchRestaurant import searchRestaurant
-from src.views.dateTimeTable import dateTimeTable
+from views.searchRestaurant import searchRestaurant
+from views.dateTimeTable import dateTimeTable
 import mysql.connector
 
 app = Flask(__name__)

@@ -19,7 +19,7 @@
     {% endif %}
 {% endwith %}
 
-<nav id="mainheader" class="navbar navbar-inverse navbar fixed-top">
+<nav class="navbar navbar-inverse navbar fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
 
@@ -44,6 +44,14 @@
         </div>
     </div>
 </nav>
+
+<div class="jumbotron">
+<div class="container">
+{% if err is defined %}
+<div class="alert-danger" style="font-size: 2.5em">{{err}}</div>
+{% endif %}
+</div>
+</div>
 
 {% block content %}
 
