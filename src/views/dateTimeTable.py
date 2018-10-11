@@ -13,9 +13,13 @@ def dateAndTime():
 
 @dateTimeTable.route('/dateAndTimeConfirmed', methods=["POST"])
 def dateAndTimeConfirmed():
-    theDate = request.form["theDate"]
-    theTime = request.form["theTime"]
+    theDate   = request.form["theDate"]
+    theTime   = request.form["theTime"]
+    thePeople = request.form["thePeople"]
+    theName   = request.form["theName"]
+    thePhone  = request.form["thePhone"]
+    theEmail  = request.form["theEmail"]
 
 
-
-    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime, theRestaurant=theRestaurant)
+    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime, 
+    theRestaurant=theRestaurant, thePeople=thePeople, theName=theName, thePhone=thePhone, theEmail=theEmail)
