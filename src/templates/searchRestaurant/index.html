@@ -8,7 +8,9 @@ Front page
 {% block script %}
     {{ super()}}
     <script>
-      var map, infoWindow,pos;
+      var map, infoWindow,pos,latRestaurant,longRestaurant;
+      latRestaurant=58.970052;
+      longRestaurant=5.730274;
       function initMap() {
         map = new google.maps.Map(document.getElementById('googleMap'), {
           center: {lat: 58.969800, lng: 5.733333},
@@ -25,7 +27,7 @@ Front page
             };
 
             infoWindow.setPosition(pos);
-            infoWindow.setContent('Location found.');
+            infoWindow.setContent('Your location');
             infoWindow.open(map);
             map.setCenter(pos);
               
@@ -35,7 +37,7 @@ Front page
                 map: map
             });
 
-            displayRoute(pos, {lat:58.970052, lng:5.730274}, directionsService,
+            displayRoute(pos, {lat:latRestaurant,lng:longRestaurant}, directionsService,
             directionsDisplay);
               
               
@@ -72,6 +74,22 @@ Front page
           }
         });
       }
+    function showDirection(id) {
+        if (id=="1"){
+            this.longRestaurant=5.730274;
+            this.latRestaurant=58.970052;
+        
+        }
+        else if(id=="2"){
+            this.longRestaurant=5.617925;
+            this.latRestaurant=59.000448;
+        }
+        else{ // 5.739098
+            this.longRestaurant=5.739098;
+            this.latRestaurant=58.850582;
+        }
+        initMap();
+    }
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6SomsDgQgCxpJjweOxWHCWgQWyD5dZVs&callback=initMap">
@@ -91,13 +109,13 @@ Front page
                 </div>
             </div>
             <div id="main">
-                <h1>Some content</h1>
+                <h1>Choose your restaurant</h1>
                 <div id="googleMap" style="width:500px;height:380px;"></div><br>
                 <form action="{{ url_for('dateTimeTable.dateAndTime') }}" method="POST">
 
-                    <input type="radio" name="theRestaurant" value="Restaurant1" checked> Restaurant 1<br>
-                    <input type="radio" name="theRestaurant" value="Restaurant2"> Restaurant 2<br>
-                    <input type="radio" name="theRestaurant" value="Restaurant3"> Restaurant 3<br>
+                    <input type="radio" name="theRestaurant" onclick="showDirection(1)" value="Restaurant1" checked> Banana Cabana Stavanger (Kongsgårdsbakken 1, 4005 Stavanger)<br>
+                    <input type="radio" name="theRestaurant" onclick="showDirection(2)" value="Restaurant2"> Banana Cabana Randaberg (Tungenesveien 2, 4070 Randaberg)<br>
+                    <input type="radio" name="theRestaurant" onclick="showDirection(3)" value="Restaurant3"> Banana Cabana Sandnes (Julie Eges Gate 6, 4306 Sandnes)<br>
 
                     <input type="submit" name="continueBooking" value="Continue booking">
                 </form>
