@@ -94,6 +94,7 @@ Front page
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6SomsDgQgCxpJjweOxWHCWgQWyD5dZVs&callback=initMap">
     </script>
+    <script src="{{ url_for('static',filename='js/reservation.js') }}"></script>
 {% endblock %}
 
 
@@ -111,13 +112,13 @@ Front page
             <div id="main">
                 <h1>Choose your restaurant</h1>
                 <div id="googleMap" style="width:500px;height:380px;"></div><br>
-                <form action="{{ url_for('dateTimeTable.dateAndTime') }}" method="POST">
+                <form  id="formSearchRestaurant" action="{{ url_for('dateTimeTable.dateAndTime') }}" method="POST">
 
                     <input type="radio" name="theRestaurant" onclick="showDirection(1)" value="Restaurant1" checked> Banana Cabana Stavanger (Kongsgårdsbakken 1, 4005 Stavanger)<br>
                     <input type="radio" name="theRestaurant" onclick="showDirection(2)" value="Restaurant2"> Banana Cabana Randaberg (Tungenesveien 2, 4070 Randaberg)<br>
                     <input type="radio" name="theRestaurant" onclick="showDirection(3)" value="Restaurant3"> Banana Cabana Sandnes (Julie Eges Gate 6, 4306 Sandnes)<br>
 
-                    <input type="submit" name="continueBooking" value="Continue booking">
+                    <input type="submit"  name="continueBooking" value="Continue booking">
                 </form>
             </div>
                 <div class="info-reservation flex-w p-t-80">
@@ -137,3 +138,4 @@ Front page
 
 
 {% endblock %}
+
