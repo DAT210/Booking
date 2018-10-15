@@ -9,8 +9,8 @@ Front page
     {{ super()}}
     <script>
       var map, infoWindow,pos,latRestaurant,longRestaurant;
-      latRestaurant=58.970052;
-      longRestaurant=5.730274;
+      latRestaurant=0;
+      longRestaurant=0;
       function initMap() {
         map = new google.maps.Map(document.getElementById('googleMap'), {
           center: {lat: 58.969800, lng: 5.733333},
@@ -19,7 +19,7 @@ Front page
         infoWindow = new google.maps.InfoWindow;
 
         // Try HTML5 geolocation.
-        if (navigator.geolocation) {
+        if (navigator.geolocation && latRestaurant!= 0 && longRestaurant!= 0) {
           navigator.geolocation.getCurrentPosition(function(position) {
             var pos = {
               lat: position.coords.latitude,
@@ -30,7 +30,7 @@ Front page
             infoWindow.setContent('Your location');
             infoWindow.open(map);
             map.setCenter(pos);
-              
+
             var directionsService = new google.maps.DirectionsService;
             var directionsDisplay = new google.maps.DirectionsRenderer({
                 draggable: true,
@@ -39,8 +39,8 @@ Front page
 
             displayRoute(pos, {lat:latRestaurant,lng:longRestaurant}, directionsService,
             directionsDisplay);
-              
-              
+
+
           }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
           });
@@ -48,7 +48,7 @@ Front page
           // Browser doesn't support Geolocation
           handleLocationError(false, infoWindow, map.getCenter());
         }
-          
+
 
       }
 
@@ -56,7 +56,7 @@ Front page
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
                               'Error: The Geolocation service failed.' :
-                              'Error: Your browser doesn\'t support geolocation.');
+                              'No direction to display');
         infoWindow.open(map);
       }
 
@@ -75,21 +75,13 @@ Front page
         });
       }
     function showDirection(id) {
-        if (id=="1"){
-            this.longRestaurant=5.730274;
-            this.latRestaurant=58.970052;
-        
-        }
-        else if(id=="2"){
-            this.longRestaurant=5.617925;
-            this.latRestaurant=59.000448;
-        }
-        else{ // 5.739098
-            this.longRestaurant=5.739098;
-            this.latRestaurant=58.850582;
-        }
+        var id_i=parseInt(id);
+        var c = {{coords}};
+        this.longRestaurant=c[id_i-1][0];
+        this.latRestaurant=c[id_i-1][1];
         initMap();
-    }
+        }
+
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6SomsDgQgCxpJjweOxWHCWgQWyD5dZVs&callback=initMap">
@@ -109,18 +101,19 @@ Front page
                 <h3 class="tit3 t-center m-b-35 m-t-2"> Book table</h3>
                 </div>
             </div>
-            <div id="main">
-                <h1>Choose your restaurant</h1>
-                <div id="googleMap" style="width:500px;height:380px;"></div><br>
-                <form  id="formSearchRestaurant" action="{{ url_for('dateTimeTable.dateAndTime') }}" method="POST">
+            <div id="main" style="width:85%;margin: 0 auto;text-align: center">
 
-                    <input type="radio" name="theRestaurant" onclick="showDirection(1)" value="Restaurant1" checked> Banana Cabana Stavanger (Kongsgårdsbakken 1, 4005 Stavanger)<br>
-                    <input type="radio" name="theRestaurant" onclick="showDirection(2)" value="Restaurant2"> Banana Cabana Randaberg (Tungenesveien 2, 4070 Randaberg)<br>
-                    <input type="radio" name="theRestaurant" onclick="showDirection(3)" value="Restaurant3"> Banana Cabana Sandnes (Julie Eges Gate 6, 4306 Sandnes)<br>
-
-                    <input type="submit"  name="continueBooking" value="Continue booking">
-                </form>
-            </div>
+                <h1 style="margin-top: -20px;margin-bottom: 50px">Choose your restaurant</h1>
+                <div style="display:inline-flex;flex-direction: row;justify-content: space-between;width:85%">
+                    <form action="{{ url_for('dateTimeTable.dateAndTime') }}" style="width:40%" method="POST">
+                        {% for i in range(names|length) %}
+                            {% set myDirection = "showDirection("+(i+1)|string+")" %}
+                            <input type="radio" name="theRestaurant" onclick={{myDirection}} value={{names[i]}} > {{names[i]}}<br>
+                        {% endfor %}
+                        <input style="margin-top: 50px" type="submit" name="continueBooking" value="Continue booking">
+                    </form>
+                    <div id="googleMap" style="width:60%;height:380px;"></div>
+                </div>
                 <div class="info-reservation flex-w p-t-80">
                     <div class="size23 w-full-md p-t-40 p-r-30 p-r-0-md">
                         <h4 class="txt5 m-b-18"> Reserve by Phone</h4>
@@ -131,6 +124,7 @@ Front page
                     </div>
                 </div>
         </div>
+    </div>
     </div>
 </section>
 <br>
