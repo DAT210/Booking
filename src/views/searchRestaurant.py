@@ -2,11 +2,29 @@ from flask import Blueprint, render_template
 from jinja2 import TemplateNotFound
 import mysql.connector
 import requests
-searchRestaurant = Blueprint('searchRestaurant', __name__)
-from src import app
-from src.models import Restaurant
 
-conn = app.config["DATABASE"]
+searchRestaurant = Blueprint('searchRestaurant', __name__)
+
+# conn = app.config["DATABASE"]
+
+# Because I cannot import app.configs
+conn = mysql.connector.connect(
+	host="localhost",
+	user="your_user",
+	passwd="your_pwd",
+	database="your_db"
+)
+
+class Restaurant:
+	def __init__(self, id, name, phone, zip, street, latitude, longitude):
+		self.id = id
+		self.name = name
+		self.phone = phone
+		self.zip = zip
+		self.street = street
+		self.latitude = latitude
+		self.longitude = longitude
+
 
 # sends along a tuple for each restaurant consisting of name,latitude,longitude
 @searchRestaurant.route('/')
