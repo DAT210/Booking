@@ -7,15 +7,14 @@ dateTimeTable = Blueprint('dateTimeTable', __name__)
 def dateAndTime():
     global theRestaurant
     theRestaurant = request.form["theRestaurant"]
-    return render_template('dateTimeTable/chooseDate.html', restaurant=theRestaurant, 
-    address="Stavanger", telephone="555 55 555")
+    return render_template('dateTimeTable/chooseDate.html', restaurant=theRestaurant,
+     telephone="555 55 555")
     
 
 @dateTimeTable.route('/dateAndTimeConfirmed', methods=["POST"])
 def dateAndTimeConfirmed():
     theDate   = request.form["theDate"]
     theTime   = request.form["theTime"]
-    thePeople = request.form["thePeople"]
     theName   = request.form["theName"]
     thePhone  = request.form["thePhone"]
     theEmail  = request.form["theEmail"]
