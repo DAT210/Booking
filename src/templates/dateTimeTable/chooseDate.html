@@ -5,15 +5,15 @@ Choose date and time
 {% endblock %}
 
 {% block content %}
-<p style="font-weight: bold">Restaurant: {% if restaurant is defined %}{{restaurant}}{% endif %}</p>
-<p style="font-weight: bold">Telephone: {% if telephone is defined %}{{telephone}}{% endif %}</p>
+<p style="font-weight: bold">Restaurant: {{restaurant}}</p>
+<p style="font-weight: bold">Telephone: {{telephone}}</p>
 
 <br>
 
 <form action="{{ url_for('dateTimeTable.dateAndTimeConfirmed') }}" method="POST">
     <div class="form-group">
         <label>Date: </label>
-        <input required type="date" name="theDate">
+        <input required type="date" name="theDate" min="{{dateNow}}">
     </div>
 
     <div class="form-group">
@@ -42,7 +42,6 @@ Choose date and time
     <div class="form-group">
         <label>Table visualization here</label>
     </div>
-    
 
     <div class="form-group">
         <input type="submit" name="setDateAndTime" value="Continue booking">
