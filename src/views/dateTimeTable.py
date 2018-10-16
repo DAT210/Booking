@@ -22,9 +22,10 @@ def dateAndTimeConfirmed():
     theDate   = request.form["theDate"]
     theTime   = request.form["theTime"]
     theName   = request.form["theName"]
+    thePeople = request.form["thePeople"]
     thePhone  = request.form["thePhone"]
     theEmail  = request.form["theEmail"]
 
 
     return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime, 
-    theRestaurant=theRestaurant, theName=theName, thePhone=thePhone, theEmail=theEmail)
+    theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
