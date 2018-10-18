@@ -1,7 +1,8 @@
-import os
-import sys
 from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
+import os
+import sys
+from flask import Flask
 from python_mysql_dbconfig import read_db_config
 import mysql.connector
 import time
@@ -18,7 +19,6 @@ from views.dateTimeTable import dateTimeTable
 api = Api(app)
 app.register_blueprint(searchRestaurant)
 app.register_blueprint(dateTimeTable)
-
 app.debug = True
 docker =False
 if docker:
