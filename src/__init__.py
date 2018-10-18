@@ -14,9 +14,9 @@ app.debug = True
 
 mydb = mysql.connector.connect(
     host="localhost",
-    user="root",
-    passwd="root",
-    database="dat210_booking"
+    user="your_user",
+    passwd="your_pwd",
+    database="your_db"
 )
 app.config.from_mapping(DATABASE=mydb,)
 
