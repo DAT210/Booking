@@ -18,6 +18,8 @@
 --
 -- Table structure for table `booking_info`
 --
+CREATE SCHEMA IF NOT EXISTS `bookingdb` ;
+USE `bookingdb` ;
 
 DROP TABLE IF EXISTS `booking_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

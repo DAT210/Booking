@@ -2,15 +2,11 @@
 import pytest
 import mysql.connector
 from src import app
+from python_mysql_dbconfig import read_db_config
 
 @pytest.fixture
 def client():
-    app.config['DATABASE'] = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        passwd="yourpassword",
-        database="yourdatabase"
-    )
+    app.config['DATABASE'] =read_db_config("static/config.ini")
     app.config['TESTING'] = True
     client = app.test_client()
 
