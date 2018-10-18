@@ -113,3 +113,7 @@ dmypy.json
 # Visual Studio code settings
 .vscode
 settings.json
+
+#config files
+src/static/config.ini
+src/static/configDocker.ini
