@@ -18,6 +18,7 @@ from views.dateTimeTable import dateTimeTable
 api = Api(app)
 app.register_blueprint(searchRestaurant)
 app.register_blueprint(dateTimeTable)
+
 app.debug = True
 docker =False
 if docker:
