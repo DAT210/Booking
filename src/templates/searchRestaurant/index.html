@@ -4,7 +4,10 @@
 Front page
 {% endblock %}
 
-
+{% block styles %}
+    {{ super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dateTime.css')}}">
+{% endblock %}
 {% block script %}
     {{ super()}}
     <script>
