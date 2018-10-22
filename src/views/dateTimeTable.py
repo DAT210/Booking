@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request
 import datetime
-
+from src import app
+from models import Restaurant
 now = datetime.datetime.now()
 
 dateTimeTable = Blueprint('dateTimeTable', __name__)
@@ -12,9 +13,9 @@ def dateAndTime():
     dateNow = now.strftime("%Y-%m-%d")
     print(dateNow)
     theRestaurant = request.form["theRestaurant"]
-
-    return render_template('dateTimeTable/chooseDate.html', restaurant=theRestaurant, 
-    address="Stavanger", telephone="555 55 555", dateNow=dateNow)
+    print(theRestaurant)
+    selectedRestaurant=Restaurant.fetchRestaurant(1)
+    return render_template('dateTimeTable/chooseDate.html', restaurant=selectedRestaurant)
     
 
 @dateTimeTable.route('/dateAndTimeConfirmed', methods=["POST"])
