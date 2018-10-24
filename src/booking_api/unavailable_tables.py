@@ -1,7 +1,7 @@
-from flask import request
+from flask import request, Blueprint
 from flask_restful import Resource
 from datetime import datetime, timedelta
-from src.booking_api.db_methods import db_get_unavailable_tables, check_rid
+from .db_methods import db_get_unavailable_tables
 
 periods = {
     1: "12:00",
@@ -26,10 +26,9 @@ class UnavailableTables(Resource):
                 return {"Error": "Wrong syntax for date"}, 400
             elif checkDate(date) == 1:
                 return {"Error": "We don't have data for this date"}, 400
-            elif int(period) not in periods.keys():
+
+            if int(period) not in periods.keys():
                 return {"Error": "No such period"}, 400
-            elif not check_rid(rid):
-                return {"Error": "No such restaurant"}, 400
 
             tables = db_get_unavailable_tables(date, period, rid)
         else:
@@ -40,11 +39,11 @@ class UnavailableTables(Resource):
 # returns 0 if date string is of wrong format. Returns 1 if the request date is 2 months ahead of datetime.now()
 def checkDate(datestr):
     try:
-        req_date = datetime.strptime(datestr, "%Y-%m-%d")
+        datetime.strptime(datestr, "%Y-%m-%d")
     except ValueError:
         return 0
 
-    if req_date > datetime.now() + timedelta(days=60) or req_date < datetime.now() :
+    if datetime.strptime(datestr, "%Y-%m-%d") > datetime.now() + timedelta(days=60):
         return 1
 
     return 2

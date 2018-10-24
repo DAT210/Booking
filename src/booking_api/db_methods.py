@@ -1,6 +1,11 @@
 import mysql.connector
-from src import app
-mydb=app.config["DATABASE"]
+
+mydb = mysql.connector.connect(
+	host="localhost",
+	user="root",
+	passwd="root",
+	database="dat210_booking"
+)
 
 def db_get_unavailable_tables(date, period_id, rid):
     cur = mydb.cursor()
@@ -15,19 +20,3 @@ def db_get_unavailable_tables(date, period_id, rid):
     finally:
         cur.close()
     return tables
-
-
-
-def check_rid(rid):
-    cur = mydb.cursor()
-    check = True
-    try:
-        sql = "SELECT * FROM restaurant WHERE rid = %s"
-        cur.execute(sql, (rid,))
-        if len(cur.fetchall()) < 1:
-            check = False
-    except mysql.connector.Error as err:
-        print("Error: {}".format(err.msg))
-    finally:
-        cur.close()
-    return check
