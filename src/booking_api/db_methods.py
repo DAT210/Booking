@@ -1,12 +1,6 @@
 import mysql.connector
-
-
-mydb = mysql.connector.connect(
-	host="localhost",
-	user="root",
-	passwd="root",
-	database="dat210_booking"
-)
+from src import app
+mydb=app.config["DATABASE"]
 
 def db_get_unavailable_tables(date, period_id, rid):
     cur = mydb.cursor()
