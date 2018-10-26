@@ -1,5 +1,6 @@
 import mysql.connector
 
+
 mydb = mysql.connector.connect(
 	host="localhost",
 	user="root",
@@ -20,3 +21,19 @@ def db_get_unavailable_tables(date, period_id, rid):
     finally:
         cur.close()
     return tables
+
+
+
+def check_rid(rid):
+    cur = mydb.cursor()
+    check = True
+    try:
+        sql = "SELECT * FROM restaurant WHERE rid = %s"
+        cur.execute(sql, (rid,))
+        if len(cur.fetchall()) < 1:
+            check = False
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        cur.close()
+    return check
