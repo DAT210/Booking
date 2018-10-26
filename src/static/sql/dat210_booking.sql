@@ -18,6 +18,7 @@
 --
 -- Table structure for table `booking_info`
 --
+
 CREATE SCHEMA IF NOT EXISTS `bookingdb` ;
 USE `bookingdb` ;
 
@@ -27,13 +28,10 @@ DROP TABLE IF EXISTS `booking_info`;
 CREATE TABLE `booking_info` (
   `bid` int(11) NOT NULL AUTO_INCREMENT,
   `cid` int(11) DEFAULT NULL,
-  `rid` int(11) DEFAULT NULL,
   `additional_info` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`bid`),
   KEY `cid` (`cid`),
-  KEY `fk_rid` (`rid`),
-  CONSTRAINT `booking_info_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`),
-  CONSTRAINT `fk_rid` FOREIGN KEY (`rid`) REFERENCES `rest_book` (`rid`)
+  CONSTRAINT `booking_info_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -86,14 +84,13 @@ CREATE TABLE `rest_book` (
   `rid` int(11) NOT NULL,
   `bid` int(11) NOT NULL,
   `tid` int(11) NOT NULL,
-  `date` datetime DEFAULT NULL,
-  `for_hours` int(11) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `peid` int(11) NOT NULL,
   PRIMARY KEY (`rid`,`bid`,`tid`),
   KEY `bid` (`bid`),
   KEY `tid` (`tid`),
   CONSTRAINT `rest_book_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `restaurant` (`rid`),
-  CONSTRAINT `rest_book_ibfk_2` FOREIGN KEY (`bid`) REFERENCES `booking_info` (`bid`),
-  CONSTRAINT `rest_book_ibfk_3` FOREIGN KEY (`tid`) REFERENCES `tables` (`tid`)
+  CONSTRAINT `rest_book_ibfk_2` FOREIGN KEY (`bid`) REFERENCES `booking_info` (`bid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -119,10 +116,12 @@ CREATE TABLE `restaurant` (
   `phone` varchar(20) DEFAULT NULL,
   `zip` int(11) DEFAULT NULL,
   `street` varchar(50) DEFAULT NULL,
+  `latitude` varchar(15) DEFAULT NULL,
+  `longitude` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`rid`),
   KEY `zip` (`zip`),
   CONSTRAINT `restaurant_ibfk_1` FOREIGN KEY (`zip`) REFERENCES `zip_city` (`zip`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,32 +130,8 @@ CREATE TABLE `restaurant` (
 
 LOCK TABLES `restaurant` WRITE;
 /*!40000 ALTER TABLE `restaurant` DISABLE KEYS */;
-INSERT INTO `restaurant` VALUES (1,'Bob\'s Restaurant','66666666',4010,'Mariero 20');
+INSERT INTO `restaurant` VALUES (1,'Royale Stavanger','90010000',4005,'Kongsgårdbakken 1','5.730274','58.970052'),(2,'Mexico Randaberg','90020000',4070,'Tungenesveien 2','5.617925','59.000448'),(3,'Famoso Sandnes','90030000',4306,'Julie Eges Gate 6','5.739098','58.850582');
 /*!40000 ALTER TABLE `restaurant` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tables`
---
-
-DROP TABLE IF EXISTS `tables`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tables` (
-  `tid` int(11) NOT NULL,
-  `num_chairs` int(11) DEFAULT NULL,
-  `description` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`tid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tables`
---
-
-LOCK TABLES `tables` WRITE;
-/*!40000 ALTER TABLE `tables` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tables` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -179,7 +154,7 @@ CREATE TABLE `zip_city` (
 
 LOCK TABLES `zip_city` WRITE;
 /*!40000 ALTER TABLE `zip_city` DISABLE KEYS */;
-INSERT INTO `zip_city` VALUES (4010,'Stavanger');
+INSERT INTO `zip_city` VALUES (4005,'Stavanger'),(4010,'Stavanger'),(4070,'Randaberg'),(4306,'Sandnes');
 /*!40000 ALTER TABLE `zip_city` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -192,4 +167,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-03 11:31:11
+-- Dump completed on 2018-10-26 11:41:58
