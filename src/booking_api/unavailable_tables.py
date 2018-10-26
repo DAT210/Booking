@@ -1,7 +1,7 @@
-from flask import request, Blueprint
+from flask import request
 from flask_restful import Resource
 from datetime import datetime, timedelta
-from .db_methods import db_get_unavailable_tables, check_rid
+from src.booking_api.db_methods import db_get_unavailable_tables, check_rid
 
 periods = {
     1: "12:00",
