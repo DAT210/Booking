@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request
 import datetime
 from src import app
 from models import Restaurant
+from templatebuild import buildSelectOptions
 now = datetime.datetime.now()
 
 dateTimeTable = Blueprint('dateTimeTable', __name__)
@@ -15,7 +16,12 @@ def dateAndTime():
     theRestaurant = request.form["theRestaurant"]
     print(theRestaurant)
     selectedRestaurant=Restaurant.fetchRestaurant(1)
-    return render_template('dateTimeTable/chooseDate.html', restaurant=selectedRestaurant)
+    mycursor=app.config["DATABASE"].cursor()
+    query="SELECT * FROM period";
+    mycursor.execute(query)
+    periods=mycursor.fetchall()
+    periodsOptions=buildSelectOptions(periods)
+    return render_template('dateTimeTable/chooseDate.html', restaurant=selectedRestaurant,periods=periodsOptions)
     
 
 @dateTimeTable.route('/dateAndTimeConfirmed', methods=["POST"])
