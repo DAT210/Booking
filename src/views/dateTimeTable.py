@@ -3,6 +3,7 @@ import datetime
 from src import app
 from models import Restaurant
 from templatebuild import buildSelectOptions
+from templatebuild import buildTimesButtons
 now = datetime.datetime.now()
 
 dateTimeTable = Blueprint('dateTimeTable', __name__)
@@ -22,7 +23,18 @@ def dateAndTime():
     periods=mycursor.fetchall()
     periodsOptions=buildSelectOptions(periods)
     return render_template('dateTimeTable/chooseDate.html', restaurant=selectedRestaurant,periods=periodsOptions)
-    
+
+
+@dateTimeTable.route('/dateAndTime/time', methods=["POST"])
+def times():
+    period=request.form["period"]
+    mycursor=app.config["DATABASE"].cursor()
+    query="SELECT TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period='"+str(period)+"';"
+    mycursor.execute(query)
+    times=mycursor.fetchall()
+    timesButton=buildTimesButtons(times)
+    return render_template("dateTimeTable/time.html", times=timesButton)
+
 
 @dateTimeTable.route('/dateAndTimeConfirmed', methods=["POST"])
 def dateAndTimeConfirmed():
@@ -34,5 +46,6 @@ def dateAndTimeConfirmed():
     theEmail  = request.form["theEmail"]
 
 
-    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime, 
+    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
     theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
+
