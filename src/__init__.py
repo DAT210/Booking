@@ -5,6 +5,7 @@ from python_mysql_dbconfig import read_db_config
 import mysql.connector
 
 currentPath=os.path.dirname(os.path.abspath(__file__))
+sys.path.append(currentPath)
 currentPath=os.path.abspath(os.path.join(currentPath, os.pardir))
 sys.path.append(currentPath)
 
