@@ -11,12 +11,14 @@ conn = app.config["DATABASE"]
 # sends along a tuple for each restaurant consisting of name,latitude,longitude
 @searchRestaurant.route('/')
 def index():
-	names = []
-	coords = []
-	for r in restaurants:
-		names.append((r.name))
-		coords.append([r.latitude, r.longitude])
-	return render_template('searchRestaurant/index.html', names=names, coords=coords)
+    names = []
+    coords = []
+    ids = []
+    for r in restaurants:
+        names.append((r.name))
+        coords.append([r.latitude, r.longitude])
+        ids.append((r.rid))
+    return render_template('searchRestaurant/index.html', names=names, coords=coords,ids=ids)
 
 
 def fetch_restaurants():
