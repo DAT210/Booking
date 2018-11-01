@@ -27,11 +27,9 @@ DROP TABLE IF EXISTS `booking_info`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `booking_info` (
   `bid` int(11) NOT NULL AUTO_INCREMENT,
-  `cid` int(11) DEFAULT NULL,
+  `cid` int(11) NOT NULL,
   `additional_info` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`bid`),
-  KEY `cid` (`cid`),
-  CONSTRAINT `booking_info_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -42,35 +40,6 @@ CREATE TABLE `booking_info` (
 LOCK TABLES `booking_info` WRITE;
 /*!40000 ALTER TABLE `booking_info` DISABLE KEYS */;
 /*!40000 ALTER TABLE `booking_info` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `customer`
---
-
-DROP TABLE IF EXISTS `customer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `customer` (
-  `cid` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(50) DEFAULT NULL,
-  `last_name` varchar(50) DEFAULT NULL,
-  `email` varchar(50) DEFAULT NULL,
-  `zip` int(11) DEFAULT NULL,
-  `street` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`cid`),
-  KEY `zip` (`zip`),
-  CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`zip`) REFERENCES `zip_city` (`zip`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `customer`
---
-
-LOCK TABLES `customer` WRITE;
-/*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-/*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
