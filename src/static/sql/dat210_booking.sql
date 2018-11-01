@@ -29,7 +29,7 @@ CREATE TABLE `booking_info` (
   `bid` int(11) NOT NULL AUTO_INCREMENT,
   `cid` int(11) NOT NULL,
   `additional_info` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`bid`),
+  PRIMARY KEY (`bid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
