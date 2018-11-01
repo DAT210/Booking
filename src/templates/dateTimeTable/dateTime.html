@@ -1,0 +1,54 @@
+<div id="rowButton" class="row">
+    <div class="offset-3 col-lg-3">
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-3" id="restaurantInfo">
+        <div class="card">
+            <div class="card-header">
+                <h3>Restaurant</h3>
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    <p style="font-weight: bold">{{restaurant.name}}</p>
+                    <p style="font-weight: bold">{{restaurant.street}}</p>
+                    <p style="font-weight: bold">{{restaurant.zip}}</p>
+                    <p style="font-weight: bold">Telephone: {{restaurant.phone}}</p>
+                </div>
+            </div>
+        </div>
+        <div id="bookingInfo" class="card">
+            <div class="card-header">
+                <h3>Your booking</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label" for="peopleInfo">Number of people</label>
+                    <input name="peopleInfo" id="peopleInfo" disabled class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="peopleColumn"class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>Number of people for the booking</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <select id="selectNumberPeople" name="people" class="form-control">
+                        <option value="" disabled selected>Number of people</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ url_for('static',filename='js/dateTime.js') }}"></script>

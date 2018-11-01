@@ -4,6 +4,8 @@ from src import app
 from models import Restaurant
 from templatebuild import buildSelectOptions
 from templatebuild import buildTimesButtons
+from flask import jsonify
+
 now = datetime.datetime.now()
 
 dateTimeTable = Blueprint('dateTimeTable', __name__)
@@ -11,18 +13,25 @@ dateTimeTable = Blueprint('dateTimeTable', __name__)
 
 @dateTimeTable.route("/dateAndTime", methods=["POST"])
 def dateAndTime():
-    global theRestaurant
-    dateNow = now.strftime("%Y-%m-%d")
-    print(dateNow)
-    theRestaurant = request.form["theRestaurant"]
-    print(theRestaurant)
-    selectedRestaurant=Restaurant.fetchRestaurant(1)
+    global restaurantID
+    restaurantID = request.form["theRestaurant"]
+    selectedRestaurant=Restaurant.fetchRestaurant(restaurantID)
+    return render_template('dateTimeTable/dateTime.html', restaurant=selectedRestaurant)
+
+@dateTimeTable.route("/dateAndTime/date", methods=["POST"])
+def dateAndTimePeople():
+    global people
+    people = request.form["people"]
     mycursor=app.config["DATABASE"].cursor()
     query="SELECT * FROM period";
     mycursor.execute(query)
     periods=mycursor.fetchall()
     periodsOptions=buildSelectOptions(periods)
-    return render_template('dateTimeTable/chooseDate.html', restaurant=selectedRestaurant,periods=periodsOptions)
+    templateCalendar=render_template('dateTimeTable/calendar.html')
+    templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions)
+    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people}
+    return jsonify(response)
+
 
 
 @dateTimeTable.route('/dateAndTime/time', methods=["POST"])
@@ -47,5 +56,5 @@ def dateAndTimeConfirmed():
 
 
     return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
-    theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
+    theRestaurant=restaurantID, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
 
