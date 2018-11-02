@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.12, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.21, for Win64 (x86_64)
 --
--- Host: localhost    Database: bookingdb
+-- Host: localhost    Database: DAT210_booking
 -- ------------------------------------------------------
--- Server version	8.0.12
+-- Server version	5.7.21-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
- SET NAMES utf8 ;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -15,21 +15,23 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
-CREATE SCHEMA IF NOT EXISTS `bookingdb` ;
-USE `bookingdb` ;
 --
 -- Table structure for table `booking_info`
 --
 
 DROP TABLE IF EXISTS `booking_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `booking_info` (
   `bid` int(11) NOT NULL AUTO_INCREMENT,
-  `cid` int(11) NOT NULL,
+  `cid` int(11) DEFAULT NULL,
+  `rid` int(11) DEFAULT NULL,
   `additional_info` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`bid`),
+  KEY `cid` (`cid`),
+  KEY `fk_rid` (`rid`),
+  CONSTRAINT `booking_info_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`),
+  CONSTRAINT `fk_rid` FOREIGN KEY (`rid`) REFERENCES `rest_book` (`rid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -43,27 +45,32 @@ LOCK TABLES `booking_info` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `period`
+-- Table structure for table `customer`
 --
 
-DROP TABLE IF EXISTS `period`;
+DROP TABLE IF EXISTS `customer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `period` (
-  `name` varchar(50) NOT NULL,
-  `value` varchar(50) NOT NULL,
-  PRIMARY KEY (`name`)
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `customer` (
+  `cid` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `zip` int(11) DEFAULT NULL,
+  `street` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`cid`),
+  KEY `zip` (`zip`),
+  CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`zip`) REFERENCES `zip_city` (`zip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `period`
+-- Dumping data for table `customer`
 --
 
-LOCK TABLES `period` WRITE;
-/*!40000 ALTER TABLE `period` DISABLE KEYS */;
-INSERT INTO `period` VALUES ('breakfast','Breakfast'),('dinner','Dinner'),('lunch','Lunch');
-/*!40000 ALTER TABLE `period` ENABLE KEYS */;
+LOCK TABLES `customer` WRITE;
+/*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+/*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -72,21 +79,18 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `rest_book`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rest_book` (
   `rid` int(11) NOT NULL,
   `bid` int(11) NOT NULL,
   `tid` int(11) NOT NULL,
-  `date` date DEFAULT NULL,
-  `peid` int(11) NOT NULL,
-  `time` time DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  `for_hours` int(11) DEFAULT NULL,
   PRIMARY KEY (`rid`,`bid`,`tid`),
   KEY `bid` (`bid`),
   KEY `tid` (`tid`),
-  KEY `time` (`time`),
   CONSTRAINT `rest_book_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `restaurant` (`rid`),
-  CONSTRAINT `rest_book_ibfk_2` FOREIGN KEY (`bid`) REFERENCES `booking_info` (`bid`),
-  CONSTRAINT `rest_book_ibfk_3` FOREIGN KEY (`time`) REFERENCES `time_period` (`time`)
+  CONSTRAINT `rest_book_ibfk_2` FOREIGN KEY (`bid`) REFERENCES `booking_info` (`bid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -105,7 +109,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `restaurant`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `restaurant` (
   `rid` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
@@ -131,38 +135,12 @@ INSERT INTO `restaurant` VALUES (1,'Royale Stavanger','90010000',4005,'Kongsgår
 UNLOCK TABLES;
 
 --
--- Table structure for table `time_period`
---
-
-DROP TABLE IF EXISTS `time_period`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `time_period` (
-  `time` time NOT NULL,
-  `period` varchar(50) NOT NULL,
-  PRIMARY KEY (`time`),
-  KEY `period` (`period`),
-  CONSTRAINT `time_period_ibfk_1` FOREIGN KEY (`period`) REFERENCES `period` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `time_period`
---
-
-LOCK TABLES `time_period` WRITE;
-/*!40000 ALTER TABLE `time_period` DISABLE KEYS */;
-INSERT INTO `time_period` VALUES ('09:00:00','breakfast'),('09:30:00','breakfast'),('10:00:00','breakfast'),('10:30:00','breakfast'),('17:00:00','dinner'),('17:30:00','dinner'),('18:00:00','dinner'),('18:30:00','dinner'),('19:00:00','dinner'),('19:30:00','dinner'),('20:00:00','dinner'),('20:30:00','dinner'),('21:00:00','dinner'),('12:00:00','lunch'),('12:30:00','lunch'),('13:00:00','lunch'),('13:30:00','lunch'),('14:00:00','lunch'),('14:30:00','lunch'),('15:00:00','lunch');
-/*!40000 ALTER TABLE `time_period` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `zip_city`
 --
 
 DROP TABLE IF EXISTS `zip_city`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `zip_city` (
   `zip` int(11) NOT NULL,
   `city` varchar(30) DEFAULT NULL,
@@ -189,4 +167,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-28 21:23:56
+-- Dump completed on 2018-10-15 20:53:34
