@@ -5,16 +5,52 @@ Booking confirmation
 {% endblock %}
 
 {% block content %}
-
-<br><br><br><br><br><br><br>
-<div class="form-group">
-    <p>Date: {{theDate}} </p>
-    <p>Timeperiod(12,14,16,18,20,22): {{theTime}} </p>
-    <p>Restaurant: {{theRestaurant}}</p>
-    <p>People: {{thePeople}}</p>
-    <p>Name: {{theName}}</p>
-    <p>Phone: {{thePhone}}</p>
-    <p>Email: {{theEmail}}</p>
+<div class row>
+    <div class="col-lg-6" id="bookingInfo">
+        <div class="card">
+            <div class="card-header">
+                Booking summary
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    <p style="font-weight: bold">Date: {{theDate}} </p>
+                    <p style="font-weight: bold">Timeperiod: {{theTime}} </p>
+                    <p style="font-weight: bold">Restaurant: {{theRestaurant}}</p>
+                    <p style="font-weight: bold">People: {{thePeople}}</p>
+                    {% if theName!="" %}
+                        <p style="font-weight: bold">Name: {{theName}}</p>
+                        <p style="font-weight: bold">Phone: {{thePhone}}</p>
+                        <p style="font-weight: bold">Email: {{theEmail}}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% if theName=="" %}
+    <br>
+    <div class="col-lg-9 col-md-9 col-sm-9">
+        <form id="formConfirmBooking" action="{{ url_for('dateTimeTable.dateAndTimeCheck') }}" method="POST">
+            <label>Name </label><input type="text" name="theName" required><br>
+            <label>Phone </label><input type="tel" name="thePhone" required><br>
+            <label>Email </label><input type="email" name="theEmail" required><br>
+            <input type="submit" class="btn btn-dark" value="Confirm booking">
+        </form>
+    </div>
+{% else %}
+<div class row>
+    <br>
+    <div class="col-lg-9 col-md-9 col-sm-9">
+        <form id="formEditBooking" method="POST">
+            <input type="submit" class="btn btn-dark" value="Edit your booking">
+        </form>
+        <br>
+        <form id="formMainPage" method="GET">
+            <input type="submit" class="btn btn-dark" value="Return to main page">
+        </form>
+    </div>
 </div>
+{% endif %}
+</div>
+<script type="text/javascript" src="{{ url_for('static',filename='js/dateTime.js') }}"></script>
 
 {% endblock %}
