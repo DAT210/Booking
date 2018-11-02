@@ -11,12 +11,11 @@ dateTimeTable = Blueprint('dateTimeTable', __name__)
 
 @dateTimeTable.route("/dateAndTime", methods=["POST"])
 def dateAndTime():
-    global theRestaurant
+    global selectedRestaurant
     dateNow = now.strftime("%Y-%m-%d")
-    print(dateNow)
-    theRestaurant = request.form["theRestaurant"]
-    print(theRestaurant)
-    selectedRestaurant=Restaurant.fetchRestaurant(1)
+    restaurantID = int(request.form["restaurantID"])
+    
+    selectedRestaurant=Restaurant.fetchRestaurant(restaurantID)
     mycursor=app.config["DATABASE"].cursor()
     query="SELECT * FROM period";
     mycursor.execute(query)
@@ -36,16 +35,14 @@ def times():
     return render_template("dateTimeTable/time.html", times=timesButton)
 
 
-@dateTimeTable.route('/dateAndTimeConfirmed', methods=["POST"])
-def dateAndTimeConfirmed():
-    theDate   = request.form["theDate"]
-    theTime   = request.form["theTime"]
+@dateTimeTable.route('/dateAndTime/checkBooking', methods=["POST"])
+def dateAndTimeCheck():
     theName   = request.form["theName"]
-    thePeople = request.form["thePeople"]
     thePhone  = request.form["thePhone"]
     theEmail  = request.form["theEmail"]
+    theRestaurant = selectedRestaurant.name
 
+    return render_template("dateTimeTable/confirmDate.html", theDate="2018-31-10", theTime="20:00", thePeople="2", 
+    theRestaurant=theRestaurant, theName=theName, thePhone=thePhone, theEmail=theEmail)
 
-    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
-    theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
 
