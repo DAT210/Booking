@@ -62,6 +62,7 @@ CREATE TABLE `period` (
 
 LOCK TABLES `period` WRITE;
 /*!40000 ALTER TABLE `period` DISABLE KEYS */;
+INSERT INTO `period` VALUES ('breakfast','Breakfast'),('dinner','Dinner'),('lunch','Lunch');
 /*!40000 ALTER TABLE `period` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -136,7 +137,7 @@ DROP TABLE IF EXISTS `time_period`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `time_period` (
-  `timeid` int(11) NOT NULL AUTO_INCREMENT,
+  `timeid` int(11) NOT NULL,
   `time` time NOT NULL,
   `period` varchar(50) NOT NULL,
   PRIMARY KEY (`timeid`),
@@ -151,6 +152,7 @@ CREATE TABLE `time_period` (
 
 LOCK TABLES `time_period` WRITE;
 /*!40000 ALTER TABLE `time_period` DISABLE KEYS */;
+INSERT INTO `time_period` VALUES (1,'09:00:00','breakfast'),(2,'09:30:00','breakfast'),(3,'10:00:00','breakfast'),(4,'10:30:00','breakfast'),(5,'12:00:00','lunch'),(6,'12:30:00','lunch'),(7,'13:00:00','lunch'),(8,'13:30:00','lunch'),(9,'14:00:00','lunch'),(10,'14:30:00','lunch'),(11,'15:00:00','lunch'),(12,'17:00:00','dinner'),(13,'17:30:00','dinner'),(14,'18:00:00','dinner'),(15,'18:30:00','dinner'),(16,'19:00:00','dinner'),(17,'19:30:00','dinner'),(18,'20:00:00','dinner'),(19,'20:30:00','dinner'),(20,'21:00:00','dinner');
 /*!40000 ALTER TABLE `time_period` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -187,4 +189,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-02 10:12:06
+-- Dump completed on 2018-11-02 12:43:14
