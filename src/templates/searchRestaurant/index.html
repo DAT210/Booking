@@ -117,9 +117,9 @@ Front page
                 <div id="googleMap" style="width:500px;height:380px;"></div><br>
                 <form  id="formSearchRestaurant" action="{{ url_for('dateTimeTable.dateAndTime') }}" method="POST">
 
-                    <input type="radio" name="theRestaurant" onclick="showDirection(1)" value="Restaurant1" checked> Banana Cabana Stavanger (Kongsgårdsbakken 1, 4005 Stavanger)<br>
-                    <input type="radio" name="theRestaurant" onclick="showDirection(2)" value="Restaurant2"> Banana Cabana Randaberg (Tungenesveien 2, 4070 Randaberg)<br>
-                    <input type="radio" name="theRestaurant" onclick="showDirection(3)" value="Restaurant3"> Banana Cabana Sandnes (Julie Eges Gate 6, 4306 Sandnes)<br>
+                    <input type="radio" name="restaurantID" onclick="showDirection(1)" value="1" checked> Banana Cabana Stavanger (Kongsgårdsbakken 1, 4005 Stavanger)<br>
+                    <input type="radio" name="restaurantID" onclick="showDirection(2)" value="2"> Banana Cabana Randaberg (Tungenesveien 2, 4070 Randaberg)<br>
+                    <input type="radio" name="restaurantID" onclick="showDirection(3)" value="3"> Banana Cabana Sandnes (Julie Eges Gate 6, 4306 Sandnes)<br>
 
                     <input type="submit"  name="continueBooking" value="Continue booking">
                 </form>
