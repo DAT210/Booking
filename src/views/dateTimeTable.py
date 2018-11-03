@@ -1,12 +1,11 @@
 from flask import Blueprint, render_template, request
-import datetime
+import datetime,timedelta
 from src import app
-from models import Restaurant
-from templatebuild import buildSelectOptions
-from templatebuild import buildTimesButtons
+from src.models import Restaurant
+from src.templatebuild import buildSelectOptions
+from src.templatebuild import buildTimesButtons
 from flask import jsonify
 
-now = datetime.datetime.now()
 
 dateTimeTable = Blueprint('dateTimeTable', __name__)
 
@@ -22,13 +21,16 @@ def dateAndTime():
 def dateAndTimePeople():
     global people
     people = request.form["people"]
+    now = datetime.datetime.now()
+    weeks=calculCalendarWeeks(now)
     mycursor=app.config["DATABASE"].cursor()
     query="SELECT * FROM period";
     mycursor.execute(query)
     periods=mycursor.fetchall()
     periodsOptions=buildSelectOptions(periods)
+    calendarOptions=buildSelectOptions(weeks)
     templateCalendar=render_template('dateTimeTable/calendar.html')
-    templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions)
+    templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
     response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people}
     return jsonify(response)
 
@@ -57,4 +59,14 @@ def dateAndTimeConfirmed():
 
     return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
     theRestaurant=restaurantID, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
+
+def calculCalendarWeeks(currentDate):
+    weeks=[]
+    beginCalendar = currentDate - datetime.timedelta(days=currentDate.weekday())
+    for i in range(0,3):
+        endCalendar = beginCalendar + datetime.timedelta(days=13)
+        weeks+=[[beginCalendar.strftime("%d-%m-%Y"),beginCalendar.strftime("%d/%m")+" - "+endCalendar.strftime("%d/%m")]]
+        beginCalendar=endCalendar+datetime.timedelta(days=1)
+
+    return weeks
 
