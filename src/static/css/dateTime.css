@@ -23,3 +23,11 @@
 {
     margin-bottom: 45px;
 }
+.calendarItem.disabled
+{
+    background-color: gainsboro;
+}
+.calendarItem:not(.disabled)
+{
+    cursor: pointer;
+}

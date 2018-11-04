@@ -15,7 +15,7 @@ def dateAndTime():
     global restaurantID
     restaurantID = request.form["theRestaurant"]
     selectedRestaurant=Restaurant.fetchRestaurant(restaurantID)
-    return render_template('dateTimeTable/dateTime.html', restaurant=selectedRestaurant)
+    return render_template('dateTimeTable/dateTime.html', restaurant=selectedRestaurant,restaurantID=restaurantID)
 
 @dateTimeTable.route("/dateAndTime/date", methods=["POST"])
 def dateAndTimePeople():
@@ -23,15 +23,16 @@ def dateAndTimePeople():
     people = request.form["people"]
     now = datetime.datetime.now()
     weeks=calculCalendarWeeks(now)
+    numbers=dayNumberCalendar(now)
     mycursor=app.config["DATABASE"].cursor()
     query="SELECT * FROM period";
     mycursor.execute(query)
     periods=mycursor.fetchall()
     periodsOptions=buildSelectOptions(periods)
     calendarOptions=buildSelectOptions(weeks)
-    templateCalendar=render_template('dateTimeTable/calendar.html')
+    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
-    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people}
+    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%d")}
     return jsonify(response)
 
 
@@ -39,6 +40,8 @@ def dateAndTimePeople():
 @dateTimeTable.route('/dateAndTime/time', methods=["POST"])
 def times():
     period=request.form["period"]
+    global dateSelected
+    dateSelected=request.form["dateSelected"]
     mycursor=app.config["DATABASE"].cursor()
     query="SELECT TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period='"+str(period)+"';"
     mycursor.execute(query)
@@ -69,4 +72,14 @@ def calculCalendarWeeks(currentDate):
         beginCalendar=endCalendar+datetime.timedelta(days=1)
 
     return weeks
+
+def dayNumberCalendar(currentDate):
+    numbers=[]
+    beginCalendar = currentDate - datetime.timedelta(days=currentDate.weekday())
+    for i in range(0,14):
+        number=(beginCalendar+datetime.timedelta(days=i))
+        numbers+=[number]
+    return numbers
+
+
 

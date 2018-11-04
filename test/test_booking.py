@@ -4,7 +4,7 @@ import mysql.connector
 import datetime
 from src import app
 from src import read_db_config
-from src.views.dateTimeTable import calculCalendarWeeks
+from src.views.dateTimeTable import calculCalendarWeeks, dayNumberCalendar
 
 @pytest.fixture
 def client():
@@ -33,3 +33,8 @@ def test_calendarWeeks(client):
 
     # assert no error message has been registered, else print messages
     assert not errors, "errors occured:\n{}".format("\n".join(errors))
+
+def test_calanderDaysNumber(client):
+    now=datetime.datetime.now()
+    numbers=dayNumberCalendar(now)
+    assert len(numbers)==14
