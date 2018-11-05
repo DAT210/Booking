@@ -30,9 +30,9 @@ def dateAndTimePeople():
     periods=mycursor.fetchall()
     periodsOptions=buildSelectOptions(periods)
     calendarOptions=buildSelectOptions(weeks)
-    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers, restaurant=Restaurant)
+    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
-    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%d")}
+    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%d/%m/%Y")}
     return jsonify(response)
 
 
@@ -53,7 +53,17 @@ def times():
 def chooseTableSelection():
     global selectedTime
     selectedTime=request.form["selectedTime"]
-    return render_template("dateTimeTable/buttonsTable.html")
+    return render_template("dateTimeTable/buttonsTable.html",restaurant=Restaurant)
+
+@dateTimeTable.route('/dateAndTime/changeCalendar', methods=["POST"])
+def changeCalendar():
+   now=datetime.now()
+   beginDate=request.form["beginDate"]
+   numbers=dayNumberCalendar(datetime.strptime(beginDate, '%d-%m-%Y'))
+   templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers)
+   response={"calendar" : templateCalendar,"currentDay":now.strftime("%d/%m/%Y")}
+   return jsonify(response)
+
 
 @dateTimeTable.route('/dateAndTime/checkBooking', methods=["POST"])
 def dateAndTimeCheck():

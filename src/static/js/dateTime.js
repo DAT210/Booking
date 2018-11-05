@@ -16,13 +16,12 @@ $(document).ready(function(){
                 $(".calendarItem:not(.disabled)").on("click",function(e){
                     selectDay(e,this);
                 });
-                $("#checkBooking").on("click",function(e){
-                    checkBooking(e);
+                $("#selectDate").on("change",function(e){
+                    changeCalendar(e,this);
                 });
                 console.log(response["people"])
                 $("#peopleInfo").val(response["people"]);
                 $("#bookingInfo").show();
-                $("#checkBooking").hide();
             }
         };
         xhttp.open("POST", "/dateAndTime/date");
@@ -113,7 +112,9 @@ $(document).ready(function(){
                     "<input name=\"timeInfo\" id=\"timeInfo\" disabled=\"\" class=\"form-control\">" +
                     "</div>");
                 $("#timeInfo").val(time);
-                $("#checkBooking").show();
+                $("#checkBooking").on("click",function(e){
+                    checkBooking(e);
+                });
             }
         };
         xhttp.open("POST", "/dateAndTime/tableVisualisation");
@@ -127,9 +128,13 @@ $(document).ready(function(){
         var activeDateFound=false;
         var i=0;
         var lengthCalendar=dayNumbers.length;
+        activeDate=activeDate.split("/");
+        activeDate=new Date(activeDate[2],activeDate[1],activeDate[0]);
         while(i<lengthCalendar && !activeDateFound)
         {
-            if($(dayNumbers[i]).text()===activeDate)
+            var date=$(dayNumbers[i]).data("dateday").split("/");
+            date=new Date(date[2],date[1],date[0]);
+            if(date>=activeDate)
                 activeDateFound=true;
             else
             {
@@ -137,6 +142,28 @@ $(document).ready(function(){
                 i++;
             }
         }
+    }
+    function changeCalendar(e,itemClicked)
+    {
+
+        var beginDate=$(itemClicked).val();
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                $("#bookingCalendar").remove();
+                var response= JSON.parse(this.responseText);
+                $("#restaurantInfo").parent().append(response["calendar"]);
+                $(".cp-spinner").remove();
+                disableCalendarDays(response["currentDay"]);
+                $(".calendarItem:not(.disabled)").on("click",function(e){
+                    selectDay(e,this);
+                });
+            }
+        };
+        xhttp.open("POST", "/dateAndTime/changeCalendar");
+        var formData="beginDate="+beginDate;
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(formData);
     }
 
 });
