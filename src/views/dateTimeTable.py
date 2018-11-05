@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-import datetime,timedelta
+from datetime import datetime, timedelta
 from src import app
 from src.models import Restaurant
 from src.templatebuild import buildSelectOptions
@@ -57,8 +57,8 @@ def dateAndTimeCheck():
     theRestaurant = selectedRestaurant.name
 
 
-    return render_template("dateTimeTable/confirmDate.html", theDate="2018-31-10" theTime="20:00",
-    theRestaurant=restaurantID, theName=theName, thePeople="2", thePhone=thePhone, theEmail=theEmail)
+    return render_template("dateTimeTable/confirmDate.html", theDate="2018-31-10", theTime="20:00",
+    theRestaurant=theRestaurant, theName=theName, thePeople="2", thePhone=thePhone, theEmail=theEmail)
 
 def calculCalendarWeeks(currentDate):
     weeks=[]
