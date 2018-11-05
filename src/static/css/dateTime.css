@@ -2,6 +2,10 @@
 {
 
 }
+.radioRestaurant
+{
+    display: none;
+}
 #bookingInfo
 {
     display: none;
