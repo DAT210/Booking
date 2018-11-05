@@ -22,6 +22,7 @@ $(document).ready(function(){
                 console.log(response["people"])
                 $("#peopleInfo").val(response["people"]);
                 $("#bookingInfo").show();
+                $("#checkBooking").hide();
             }
         };
         xhttp.open("POST", "/dateAndTime/date");
@@ -47,6 +48,7 @@ $(document).ready(function(){
                     "<input name=\"dateInfo\" id=\"dateInfo\" disabled=\"\" class=\"form-control\">" +
                     "</div>");
                 $("#dateInfo").val(day);
+                $("#checkBooking").show();
             }
         };
         xhttp.open("POST", "/dateAndTime/time");
