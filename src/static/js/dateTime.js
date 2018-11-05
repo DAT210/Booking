@@ -15,6 +15,9 @@ $(document).ready(function(){
                 $("#triggerTime").on("click",function(e){
                     triggerTime(e);
                 });
+                $("#checkBooking").on("click",function(e){
+                    checkBooking(e);
+                });
                 console.log(response["people"])
                 $("#peopleInfo").val(response["people"]);
                 $("#bookingInfo").show();
@@ -45,13 +48,16 @@ $(document).ready(function(){
         xhttp.send(formData);
     };
 
-    $("#formCheck").submit(function(event)
+
+
+    $("#formConfirmBooking").submit(function(event)
     {
         event.preventDefault();
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 $("#main").html(this.responseText);
+                $("#bookingInfo").show();
                 $(".cp-spinner").remove();
             }
         };
@@ -61,20 +67,21 @@ $(document).ready(function(){
         xhttp.send(formData);
     })
 
-    $("#formConfirmBooking").submit(function(event)
+    function checkBooking(event)
     {
         event.preventDefault();
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 $("#main").html(this.responseText);
+                $("#bookingInfo").show();
                 $(".cp-spinner").remove();
             }
         };
         xhttp.open("POST", "/dateAndTime/checkBooking");
-        var formData=$(this).serialize();
+        var formData=$("#formCheck").serialize();
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
         xhttp.send(formData);
-    })
+    }
 
 });

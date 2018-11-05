@@ -27,7 +27,7 @@ def dateAndTimePeople():
     mycursor.execute(query)
     periods=mycursor.fetchall()
     periodsOptions=buildSelectOptions(periods)
-    templateCalendar=render_template('dateTimeTable/calendar.html')
+    templateCalendar=render_template('dateTimeTable/calendar.html', restaurant=Restaurant)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions)
     response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people}
     return jsonify(response)
