@@ -48,7 +48,11 @@ $(document).ready(function(){
                     "<input name=\"dateInfo\" id=\"dateInfo\" disabled=\"\" class=\"form-control\">" +
                     "</div>");
                 $("#dateInfo").val(day);
-                $("#checkBooking").show();
+                $("#selectDate").remove();
+                $("#selectPeriod").remove();
+                $(".btnTime").on("click",function(e){
+                    selectTime(e,this);
+                });
             }
         };
         xhttp.open("POST", "/dateAndTime/time");
@@ -97,6 +101,7 @@ $(document).ready(function(){
     {
 
         var time=$(itemClicked).text();
+        console.log(time);
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
@@ -107,10 +112,11 @@ $(document).ready(function(){
                     "<label class=\"form-label\" for=\"timeInfo\">Booking time</label>" +
                     "<input name=\"timeInfo\" id=\"timeInfo\" disabled=\"\" class=\"form-control\">" +
                     "</div>");
-                $("#dateInfo").val(day);
+                $("#timeInfo").val(time);
+                $("#checkBooking").show();
             }
         };
-        xhttp.open("POST", "/dateAndTime/table");
+        xhttp.open("POST", "/dateAndTime/tableVisualisation");
         var formData="selectedTime="+time;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);

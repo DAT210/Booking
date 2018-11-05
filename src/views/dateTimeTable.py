@@ -49,6 +49,12 @@ def times():
     timesButton=buildTimesButtons(times)
     return render_template("dateTimeTable/time.html", times=timesButton)
 
+@dateTimeTable.route('/dateAndTime/tableVisualisation', methods=["POST"])
+def chooseTableSelection():
+    global selectedTime
+    selectedTime=request.form["selectedTime"]
+    return render_template("dateTimeTable/buttonsTable.html")
+
 @dateTimeTable.route('/dateAndTime/checkBooking', methods=["POST"])
 def dateAndTimeCheck():
     theName   = request.form["theName"]
