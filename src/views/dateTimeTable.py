@@ -55,10 +55,11 @@ def dateAndTimeCheck():
     thePhone  = request.form["thePhone"]
     theEmail  = request.form["theEmail"]
     theRestaurant = selectedRestaurant.name
+    theDate = dateSelected
+    thePeople = people
 
-
-    return render_template("dateTimeTable/confirmDate.html", theDate="2018-31-10", theTime="20:00",
-    theRestaurant=theRestaurant, theName=theName, thePeople="2", thePhone=thePhone, theEmail=theEmail)
+    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime="20:00",
+    theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
 
 def calculCalendarWeeks(currentDate):
     weeks=[]
