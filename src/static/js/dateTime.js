@@ -11,9 +11,10 @@ $(document).ready(function(){
                 var response= JSON.parse(this.responseText);
                 $("#rowButton").append(response["buttonsCalendar"]);
                 $("#restaurantInfo").parent().append(response["calendar"]);
+                disableCalendarDays(response["currentDay"]);
                 $(".cp-spinner").remove();
-                $("#triggerTime").on("click",function(e){
-                    triggerTime(e);
+                $(".calendarItem:not(.disabled)").on("click",function(e){
+                    selectDay(e,this);
                 });
                 $("#checkBooking").on("click",function(e){
                     checkBooking(e);
@@ -29,8 +30,11 @@ $(document).ready(function(){
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);
     });
-    function triggerTime(e)
+    function selectDay(e,itemClicked)
     {
+
+        var day=$(itemClicked).children().first().children("a").data("dateday");
+        console.log(day);
         event.preventDefault();
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -38,12 +42,16 @@ $(document).ready(function(){
                 $("#bookingCalendar").remove();
                 $("#restaurantInfo").parent().append(this.responseText);
                 $(".cp-spinner").remove();
-                $("#triggerTime").remove();
+                $("#bookingInfo .card-body").append("<div class=\"form-group\">" +
+                    "<label class=\"form-label\" for=\"dateInfo\">Booking date</label>" +
+                    "<input name=\"dateInfo\" id=\"dateInfo\" disabled=\"\" class=\"form-control\">" +
+                    "</div>");
+                $("#dateInfo").val(day);
             }
         };
         xhttp.open("POST", "/dateAndTime/time");
         var data=$("#selectPeriod").val();
-        var formData="period="+data;
+        var formData="period="+data+"&dateSelected="+day;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);
     };
@@ -82,6 +90,45 @@ $(document).ready(function(){
         var formData=$("#formCheck").serialize();
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
         xhttp.send(formData);
+    }
+    function selectTime(e,itemClicked)
+    {
+
+        var time=$(itemClicked).text();
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                $("#timeColumn").remove();
+                $("#restaurantInfo").parent().append(this.responseText);
+                $(".cp-spinner").remove();
+                $("#bookingInfo .card-body").append("<div class=\"form-group\">" +
+                    "<label class=\"form-label\" for=\"timeInfo\">Booking time</label>" +
+                    "<input name=\"timeInfo\" id=\"timeInfo\" disabled=\"\" class=\"form-control\">" +
+                    "</div>");
+                $("#dateInfo").val(day);
+            }
+        };
+        xhttp.open("POST", "/dateAndTime/table");
+        var formData="selectedTime="+time;
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(formData);
+    }
+    function disableCalendarDays(activeDate)
+    {
+        var dayNumbers=$(".dayNumber a");
+        var activeDateFound=false;
+        var i=0;
+        var lengthCalendar=dayNumbers.length;
+        while(i<lengthCalendar && !activeDateFound)
+        {
+            if($(dayNumbers[i]).text()===activeDate)
+                activeDateFound=true;
+            else
+            {
+                $(dayNumbers[i]).parent().parent().addClass("disabled");
+                i++;
+            }
+        }
     }
 
 });

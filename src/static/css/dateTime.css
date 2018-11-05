@@ -6,3 +6,28 @@
 {
     display: none;
 }
+.dayCalendar
+{
+    background-color: #dc3545;
+    color: white;
+}
+.calendarItem
+{
+
+    background-color: white;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    border: 1px solid rgba(0,0,0,.125);
+}
+.dayNumber
+{
+    margin-bottom: 45px;
+}
+.calendarItem.disabled
+{
+    background-color: gainsboro;
+}
+.calendarItem:not(.disabled)
+{
+    cursor: pointer;
+}

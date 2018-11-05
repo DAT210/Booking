@@ -1,5 +1,12 @@
 <div class="col-lg-3">
     <div class="form-group">
+        <select id="selectDate" name="date" class="form-control">
+            {{ weeks|safe }}
+        </select>
+    </div>
+</div>
+<div class="col-lg-3">
+    <div class="form-group">
         <select id="selectPeriod" name="period" class="form-control">
             {{ periods|safe }}
         </select>

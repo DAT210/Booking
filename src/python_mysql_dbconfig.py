@@ -1,5 +1,6 @@
 from configparser import ConfigParser
-
+from src import app
+import os
 def read_db_config(filename, section='mysql'):
     """ Read database configuration file and return a dictionary object
     :param filename: name of the configuration file
@@ -8,7 +9,7 @@ def read_db_config(filename, section='mysql'):
     """
     # create parser and read ini configuration file
     parser = ConfigParser()
-    parser.read(filename)
+    parser.read(os.path.join(app.config["APP_STATIC"], filename));
 
     # get section, default to mysql
     db = {}
