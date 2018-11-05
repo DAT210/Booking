@@ -6,6 +6,10 @@ import mysql.connector
 app = Flask(__name__)
 app.config.from_mapping(APP_ROOT=os.path.dirname(os.path.abspath(__file__)))
 app.config.from_mapping(APP_STATIC=os.path.join(app.config["APP_ROOT"], 'static'))
+currentPath=os.path.dirname(os.path.abspath(__file__))
+sys.path.append(currentPath)
+currentPath=os.path.abspath(os.path.join(currentPath, os.pardir))
+sys.path.append(currentPath)
 from src.python_mysql_dbconfig import read_db_config
 docker =False
 if docker:
@@ -21,9 +25,7 @@ from src.views.searchRestaurant import searchRestaurant
 from src.views.dateTimeTable import dateTimeTable
 app.register_blueprint(searchRestaurant)
 app.register_blueprint(dateTimeTable)
-from src.booking_api.unavailable_tables import UnavailableTables
-api = Api(app)
-api.add_resource(UnavailableTables, "/tables")
+#from src.booking_api.unavailable_tables import UnavailableTables
 
 app.debug = True
 if __name__ == '__main__':

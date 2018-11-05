@@ -21,7 +21,7 @@ def dateAndTime():
 def dateAndTimePeople():
     global people
     people = request.form["people"]
-    now = datetime.datetime.now()
+    now = datetime.now()
     weeks=calculCalendarWeeks(now)
     numbers=dayNumberCalendar(now)
     mycursor=app.config["DATABASE"].cursor()
@@ -62,19 +62,19 @@ def dateAndTimeCheck():
 
 def calculCalendarWeeks(currentDate):
     weeks=[]
-    beginCalendar = currentDate - datetime.timedelta(days=currentDate.weekday())
+    beginCalendar = currentDate - timedelta(days=currentDate.weekday())
     for i in range(0,3):
-        endCalendar = beginCalendar + datetime.timedelta(days=13)
+        endCalendar = beginCalendar + timedelta(days=13)
         weeks+=[[beginCalendar.strftime("%d-%m-%Y"),beginCalendar.strftime("%d/%m")+" - "+endCalendar.strftime("%d/%m")]]
-        beginCalendar=endCalendar+datetime.timedelta(days=1)
+        beginCalendar=endCalendar+timedelta(days=1)
 
     return weeks
 
 def dayNumberCalendar(currentDate):
     numbers=[]
-    beginCalendar = currentDate - datetime.timedelta(days=currentDate.weekday())
+    beginCalendar = currentDate - timedelta(days=currentDate.weekday())
     for i in range(0,14):
-        number=(beginCalendar+datetime.timedelta(days=i))
+        number=(beginCalendar+timedelta(days=i))
         numbers+=[number]
     return numbers
 
