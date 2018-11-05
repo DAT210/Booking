@@ -63,8 +63,9 @@ def dateAndTimeCheck():
     theRestaurant = selectedRestaurant.name
     theDate = dateSelected
     thePeople = people
+    theTime=selectedTime
 
-    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime="20:00",
+    return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
     theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
 
 def calculCalendarWeeks(currentDate):
