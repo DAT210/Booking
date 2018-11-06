@@ -10,6 +10,13 @@
 {
     display: none;
 }
+label{
+    cursor : pointer;
+}
+label:hover{
+    color : #ec1d25;
+    font-weight: bold;
+}
 .dayCalendar
 {
     background-color: #dc3545;
@@ -17,7 +24,6 @@
 }
 .calendarItem
 {
-
     background-color: white;
     padding-bottom: 15px;
     padding-top: 15px;
@@ -34,4 +40,15 @@
 .calendarItem:not(.disabled)
 {
     cursor: pointer;
+}
+.continueBooking{
+    border-radius: 10px;
+    background-color: #7f7e7d;
+    color: #000000;
+    margin-top: 50px;
+    padding: 25px; 
+}
+.continueBooking:hover{
+    cursor :pointer;
+    background-color: #ec1d25;
 }

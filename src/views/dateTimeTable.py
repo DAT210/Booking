@@ -57,12 +57,12 @@ def chooseTableSelection():
 
 @dateTimeTable.route('/dateAndTime/changeCalendar', methods=["POST"])
 def changeCalendar():
-   now=datetime.now()
-   beginDate=request.form["beginDate"]
-   numbers=dayNumberCalendar(datetime.strptime(beginDate, '%d-%m-%Y'))
-   templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers)
-   response={"calendar" : templateCalendar,"currentDay":now.strftime("%d/%m/%Y")}
-   return jsonify(response)
+    now=datetime.now()
+    beginDate=request.form["beginDate"]
+    numbers=dayNumberCalendar(datetime.strptime(beginDate, '%d-%m-%Y'))
+    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers)
+    response={"calendar" : templateCalendar,"currentDay":now.strftime("%d/%m/%Y")}
+    return jsonify(response)
 
 
 @dateTimeTable.route('/dateAndTime/checkBooking', methods=["POST"])
