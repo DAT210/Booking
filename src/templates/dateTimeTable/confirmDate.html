@@ -35,7 +35,7 @@ Booking confirmation
     <div class="col-lg-6 col-md-6 col-sm-6">
         <form id="formConfirmBooking" action="{{ url_for('dateTimeTable.dateAndTimeCheck') }}" method="POST">
             <label>Name </label><input type="text" name="theName" required><br>
-            <label>Phone </label><input type="number" name="thePhone" required><br>
+            <label>Phone </label><input type="tel" name="thePhone" required><br>
             <label>Email </label><input type="email" name="theEmail" required><br>
             <input type="submit" class="btn btn-dark" value="Confirm booking">
         </form>

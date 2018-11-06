@@ -35,7 +35,7 @@ $(document).ready(function(){
 
         var day=$(itemClicked).children().first().children("a").data("dateday");
         console.log(day);
-        event.preventDefault();
+        e.preventDefault();
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
