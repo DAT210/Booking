@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from datetime import datetime, timedelta
+from flask_mail import Mail, Message
 from src import app
 from src.models import Restaurant
 from src.templatebuild import buildSelectOptions
@@ -8,6 +9,8 @@ from flask import jsonify
 
 
 dateTimeTable = Blueprint('dateTimeTable', __name__)
+
+mail = Mail(app)
 
 
 @dateTimeTable.route("/dateAndTime", methods=["POST"])
@@ -71,12 +74,27 @@ def dateAndTimeCheck():
     thePhone  = request.form["thePhone"]
     theEmail  = request.form["theEmail"]
     theRestaurant = selectedRestaurant.name
+    theAddress = selectedRestaurant.street + ' , ' + str(selectedRestaurant.zip)
     theDate = dateSelected
     thePeople = people
     theTime=selectedTime
+    
+    if (theEmail != ''):
+        send_mail(theName,theEmail,theRestaurant,theAddress,theDate,thePeople,theTime)
 
     return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
     theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
+
+def send_mail(name,email,restaurant,address,date,people,time):
+    subject = 'Confirmation of booking - 45610'
+    message = 'Hello '+name+', <br> <br>You have booked a table for '+people+' people at : <br>'+restaurant+'<br>'+address+'<br>'+date+' - '+time+' <br> To edit your reservation, click on the link below <br> http://localhost:5000 <br> Best regards, <br> <br>' + restaurant
+    msg = Message(
+        subject=subject,
+        recipients=[email], 
+        html=message
+    )
+    mail.send(msg)
+
 
 def calculCalendarWeeks(currentDate):
     weeks=[]

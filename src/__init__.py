@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_restful import Api
+from flask_mail import Mail, Message
 import os
 import sys
 import mysql.connector
@@ -26,6 +27,20 @@ from src.views.dateTimeTable import dateTimeTable
 app.register_blueprint(searchRestaurant)
 app.register_blueprint(dateTimeTable)
 #from src.booking_api.unavailable_tables import UnavailableTables
+
+app.config.update(
+    DEBUG=False,
+    # EMAIL SETTINGS
+    MAIL_SERVER='smtp.gmail.com',
+    MAIL_PORT=465,
+    MAIL_USE_SSL=True,
+    MAIL_DEFAULT_SENDER=('no-reply', 'dat210.booking@gmail.com'),
+    MAIL_MAX_EMAILS=10,
+    MAIL_USERNAME='dat210.booking@gmail.com',
+    MAIL_PASSWORD='DAT210_booking'
+)
+
+mail = Mail(app)
 
 app.debug = True
 if __name__ == '__main__':
