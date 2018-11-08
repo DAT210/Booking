@@ -78,6 +78,17 @@ def dateAndTimeCheck():
     return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
     theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
 
+
+@dateTimeTable.route('/dateAndTime/unvtables', methods=["POST"])
+def unavailableTables():
+    theRestaurant = request.form["theRestaurant"]
+    theTime = request.form["theTime"]
+    theDate = request.form["theDate"]
+    thePeople = request.form["thePeople"]
+    unvTables = db_get_unavailable_tables(theRestaurant,theTime, theDate)
+    return jsonify(tables=unvTables, nrOfPeople=thePeople)
+
+
 def calculCalendarWeeks(currentDate):
     weeks=[]
     beginCalendar = currentDate - timedelta(days=currentDate.weekday())
@@ -95,6 +106,32 @@ def dayNumberCalendar(currentDate):
         number=(beginCalendar+timedelta(days=i))
         numbers+=[number]
     return numbers
+
+def db_get_unavailable_tables(rid, time, date):
+    timeid = db_get_corresponding_time_id(time)
+    mycursor = app.config["DATABASE"].cursor()
+    try:
+        sql = "SELECT tid FROM rest_book WHERE rid=%s AND timeid=%s AND date=%s"
+        mycursor.execute(sql, (rid, timeid, date))
+        unvTables = mycursor.fetchall()
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
+    return unvTables
+
+def db_get_corresponding_time_id(time):
+    mycursor = app.config["DATABASE"].cursor()
+    try:
+        sql = "SELECT timeid FROM time_period WHERE time=%s"
+        mycursor.execute(sql, (time,))
+        timeid = mycursor.fetchall()
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
+    print(timeid)
+    return timeid
 
 
 

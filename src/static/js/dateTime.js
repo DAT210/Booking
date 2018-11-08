@@ -19,7 +19,7 @@ $(document).ready(function(){
                 $("#selectDate").on("change",function(e){
                     changeCalendar(e,this);
                 });
-                console.log(response["people"])
+                console.log(response["people"]);
                 $("#peopleInfo").val(response["people"]);
                 $("#bookingInfo").show();
             }
@@ -115,6 +115,10 @@ $(document).ready(function(){
                 $("#checkBooking").on("click",function(e){
                     checkBooking(e);
                 });
+                $("#chooseTable").on("click", function(){
+                    $("#chooseTableVisualisation").remove();
+                    tableVis();
+                });
             }
         };
         xhttp.open("POST", "/dateAndTime/tableVisualisation");
@@ -164,6 +168,52 @@ $(document).ready(function(){
         var formData="beginDate="+beginDate;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);
+    }
+
+    function tableVis(){ // first sends a ajax req to our own flask app to get values from db
+                        // then sends a ajax req with the json that flask method made to tableVis
+        // event.preventDefault();
+        console.log("HEI");
+        showTableVisualization($("#restaurantIdInfo").val())
+        // get the values (rid, #people, date, time). For now only fixed variables
+        var theRestaurant = $("#restaurantIdInfo").val();
+        var theDate = $("#dateInfo").val()
+        var theTime = $("#timeInfo").val()
+        var thePeople = $("#peopleId").val()
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200){
+                tablesOBJ = sendTableVisRequest(this.responseText);
+                for (var a = 0; a < tablesOBJ.tables.length; a++) {
+                    // send these values to the template somehow. In template should now be all values needed to make a booking
+                }
+            }
+        };
+        xhttp.open("POST", "/dateAndTime/unvtables");
+
+        var formData="theRestaurant=" + theRestaurant + ", theDate=" + theDate + ", theTime=" + theTime + "thePeople=" + thePeople;
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+        xhttp.send(formData);
+    }
+
+    function sendTableVisRequest(unvTablesJSON) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                return JSON.parse(this.responseText);
+            }
+        };
+        xhttp.open("POST", "/tableVisualization");   // ?their url
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(unvTablesJSON)
+    }
+
+
+    function showTableVisualization(restaurantName){
+        theUrl = "http://127.0.0.1:5000/;   // ? their url + /restaurantName
+        theFrame = $("<iframe></iframe>").attr("src", theUrl, "height", "300", "width", "500");
+        $("#restaurantInfo").parent().append(theFrame);;
     }
 
 });
