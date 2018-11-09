@@ -6,7 +6,6 @@ from src.templatebuild import buildSelectOptions
 from src.templatebuild import buildTimesButtons
 from flask import jsonify
 
-
 dateTimeTable = Blueprint('dateTimeTable', __name__)
 
 
@@ -49,11 +48,17 @@ def times():
     timesButton=buildTimesButtons(times)
     return render_template("dateTimeTable/time.html", times=timesButton)
 
-@dateTimeTable.route('/dateAndTime/tableVisualisation', methods=["POST"])
-def chooseTableSelection():
+@dateTimeTable.route('/dateAndTime/showButtons', methods=["POST"])
+def showButtons():
     global selectedTime
     selectedTime=request.form["selectedTime"]
-    return render_template("dateTimeTable/buttonsTable.html",restaurant=Restaurant)
+    return render_template("dateTimeTable/buttonsTable.html")
+
+@dateTimeTable.route('/dateAndTime/bookedTables', methods=["POST"])
+def bookedTables():
+    global bookedTables
+    bookedTables = request.json()
+    return render_template("dateAndTime/formCheck.html", restaurant=Restaurant)
 
 @dateTimeTable.route('/dateAndTime/changeCalendar', methods=["POST"])
 def changeCalendar():
@@ -81,12 +86,8 @@ def dateAndTimeCheck():
 
 @dateTimeTable.route('/dateAndTime/unvtables', methods=["POST"])
 def unavailableTables():
-    theRestaurant = request.form["theRestaurant"]
-    theTime = request.form["theTime"]
-    theDate = request.form["theDate"]
-    thePeople = request.form["thePeople"]
-    unvTables = db_get_unavailable_tables(theRestaurant,theTime, theDate)
-    return jsonify(tables=unvTables, nrOfPeople=thePeople)
+    unvTables = db_get_unavailable_tables(selectedRestaurant,selectedTime, dateSelected)
+    return jsonify(tables=unvTables, nrOfPeople=people)
 
 
 def calculCalendarWeeks(currentDate):
