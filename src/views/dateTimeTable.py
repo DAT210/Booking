@@ -5,6 +5,7 @@ from src.models import Restaurant
 from src.templatebuild import buildSelectOptions
 from src.templatebuild import buildTimesButtons
 from flask import jsonify
+import mysql.connector
 
 dateTimeTable = Blueprint('dateTimeTable', __name__)
 
@@ -54,12 +55,6 @@ def showButtons():
     selectedTime=request.form["selectedTime"]
     return render_template("dateTimeTable/buttonsTable.html")
 
-@dateTimeTable.route('/dateAndTime/bookedTables', methods=["POST"])
-def bookedTables():
-    global bookedTables
-    bookedTables = request.json()
-    return render_template("dateAndTime/formCheck.html", restaurant=Restaurant)
-
 @dateTimeTable.route('/dateAndTime/changeCalendar', methods=["POST"])
 def changeCalendar():
    now=datetime.now()
@@ -69,6 +64,17 @@ def changeCalendar():
    response={"calendar" : templateCalendar,"currentDay":now.strftime("%d/%m/%Y")}
    return jsonify(response)
 
+
+@dateTimeTable.route('/dateAndTime/unvtables', methods=["POST"])
+def unavailableTables():
+    unvTables = db_get_unavailable_tables(selectedRestaurant.rid,selectedTime, dateSelected)
+    return jsonify(tables=unvTables, nrOfPeople=people)
+
+@dateTimeTable.route('/dateAndTime/bookedTables', methods=["POST"])
+def bookedTables():
+    global bookedTables
+    bookedTables = request.json()
+    return render_template("dateAndTime/formCheck.html", restaurant=Restaurant)
 
 @dateTimeTable.route('/dateAndTime/checkBooking', methods=["POST"])
 def dateAndTimeCheck():
@@ -81,13 +87,7 @@ def dateAndTimeCheck():
     theTime=selectedTime
 
     return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
-    theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
-
-
-@dateTimeTable.route('/dateAndTime/unvtables', methods=["POST"])
-def unavailableTables():
-    unvTables = db_get_unavailable_tables(selectedRestaurant,selectedTime, dateSelected)
-    return jsonify(tables=unvTables, nrOfPeople=people)
+    theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail, bookedTables=bookedTables)
 
 
 def calculCalendarWeeks(currentDate):
@@ -115,11 +115,11 @@ def db_get_unavailable_tables(rid, time, date):
         sql = "SELECT tid FROM rest_book WHERE rid=%s AND timeid=%s AND date=%s"
         mycursor.execute(sql, (rid, timeid, date))
         unvTables = mycursor.fetchall()
+        return unvTables
     except mysql.connector.Error as err:
         print("Error: {}".format(err.msg))
     finally:
         mycursor.close()
-    return unvTables
 
 def db_get_corresponding_time_id(time):
     mycursor = app.config["DATABASE"].cursor()
@@ -127,12 +127,12 @@ def db_get_corresponding_time_id(time):
         sql = "SELECT timeid FROM time_period WHERE time=%s"
         mycursor.execute(sql, (time,))
         timeid = mycursor.fetchall()
+        return timeid[0][0]
     except mysql.connector.Error as err:
         print("Error: {}".format(err.msg))
     finally:
         mycursor.close()
-    print(timeid)
-    return timeid
+
 
 
 
