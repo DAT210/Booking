@@ -24,7 +24,7 @@ $(document).ready(function(){
                 $("#bookingInfo").show();
             }
         };
-        xhttp.open("POST", "/dateAndTime/date");
+        xhttp.open("POST", "/dateAndTime/step_2");
         var data=$(this).val();
         var formData="people="+data;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -54,7 +54,7 @@ $(document).ready(function(){
                 });
             }
         };
-        xhttp.open("POST", "/dateAndTime/time");
+        xhttp.open("POST", "/dateAndTime/step_3");
         var data=$("#selectPeriod").val();
         var formData="period="+data+"&dateSelected="+day;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -174,7 +174,7 @@ $(document).ready(function(){
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200){
-                bookedTables = sendTableVisRequest(this.responseText);
+                var bookedTables = sendTableVisRequest(this.responseText);
                 sendBookedTables(bookedTables);
                 }
         };

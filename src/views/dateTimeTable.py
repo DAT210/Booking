@@ -1,33 +1,29 @@
 from flask import Blueprint, render_template, request
 from datetime import datetime, timedelta
-from src import app
 from src.models import Restaurant
+from src.db_fetches import db_get_periods, db_get_times, db_get_unavailable_tables
 from src.templatebuild import buildSelectOptions
 from src.templatebuild import buildTimesButtons
 from flask import jsonify
-import mysql.connector
 
 dateTimeTable = Blueprint('dateTimeTable', __name__)
 
 
-@dateTimeTable.route("/dateAndTime", methods=["POST"])
+@dateTimeTable.route("/dateAndTime/step_1", methods=["POST"])
 def dateAndTime():
     global selectedRestaurant
     restaurantID = request.form["theRestaurant"]
     selectedRestaurant=Restaurant.fetchRestaurant(restaurantID)
     return render_template('dateTimeTable/dateTime.html', restaurant=selectedRestaurant,restaurantID=restaurantID)
 
-@dateTimeTable.route("/dateAndTime/date", methods=["POST"])
+@dateTimeTable.route("/dateAndTime/step_2", methods=["POST"])
 def dateAndTimePeople():
     global people
     people = request.form["people"]
     now = datetime.now()
     weeks=calculCalendarWeeks(now)
     numbers=dayNumberCalendar(now)
-    mycursor=app.config["DATABASE"].cursor()
-    query="SELECT * FROM period";
-    mycursor.execute(query)
-    periods=mycursor.fetchall()
+    periods = db_get_periods()
     periodsOptions=buildSelectOptions(periods)
     calendarOptions=buildSelectOptions(weeks)
     templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers)
@@ -37,15 +33,12 @@ def dateAndTimePeople():
 
 
 
-@dateTimeTable.route('/dateAndTime/time', methods=["POST"])
+@dateTimeTable.route('/dateAndTime/step_3', methods=["POST"])
 def times():
     period=request.form["period"]
     global dateSelected
     dateSelected=request.form["dateSelected"]
-    mycursor=app.config["DATABASE"].cursor()
-    query="SELECT TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period='"+str(period)+"';"
-    mycursor.execute(query)
-    times=mycursor.fetchall()
+    times = db_get_times(period)
     timesButton=buildTimesButtons(times)
     return render_template("dateTimeTable/time.html", times=timesButton)
 
@@ -87,7 +80,7 @@ def dateAndTimeCheck():
     theTime=selectedTime
 
     return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
-    theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail, bookedTables=bookedTables)
+    theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
 
 
 def calculCalendarWeeks(currentDate):
@@ -107,32 +100,3 @@ def dayNumberCalendar(currentDate):
         number=(beginCalendar+timedelta(days=i))
         numbers+=[number]
     return numbers
-
-def db_get_unavailable_tables(rid, time, date):
-    timeid = db_get_corresponding_time_id(time)
-    mycursor = app.config["DATABASE"].cursor()
-    try:
-        sql = "SELECT tid FROM rest_book WHERE rid=%s AND timeid=%s AND date=%s"
-        mycursor.execute(sql, (rid, timeid, date))
-        unvTables = mycursor.fetchall()
-        return unvTables
-    except mysql.connector.Error as err:
-        print("Error: {}".format(err.msg))
-    finally:
-        mycursor.close()
-
-def db_get_corresponding_time_id(time):
-    mycursor = app.config["DATABASE"].cursor()
-    try:
-        sql = "SELECT timeid FROM time_period WHERE time=%s"
-        mycursor.execute(sql, (time,))
-        timeid = mycursor.fetchall()
-        return timeid[0][0]
-    except mysql.connector.Error as err:
-        print("Error: {}".format(err.msg))
-    finally:
-        mycursor.close()
-
-
-
-
