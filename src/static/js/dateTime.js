@@ -118,7 +118,7 @@ $(document).ready(function(){
                 });
             }
         };
-        xhttp.open("POST", "/dateAndTime/showButtons");
+        xhttp.open("POST", "/dateAndTime/step_4");
         var formData="selectedTime="+time;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);
@@ -167,9 +167,8 @@ $(document).ready(function(){
         xhttp.send(formData);
     }
 
-    function tableVis(){ // first sends a ajax req to our own flask app to get values from db
-                        // then sends a ajax req with the json that flask method made to tableVis
-        // event.preventDefault();
+    function tableVis(){
+
         showTableVisualization($("#restaurantIdInfo").val());
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -178,7 +177,7 @@ $(document).ready(function(){
                 sendBookedTables(bookedTables);
                 }
         };
-        xhttp.open("POST", "/dateAndTime/unvtables");
+        xhttp.open("POST", "/dateAndTime/step_5");
 
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send();
@@ -214,7 +213,7 @@ $(document).ready(function(){
                 });
             }
         };
-        xhttp.open("POST", "/dateTime/bookedTables");
+        xhttp.open("POST", "/dateTime/step_6");
         var formData = "data=" + dataJSON;
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(formData);

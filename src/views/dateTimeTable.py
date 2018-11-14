@@ -42,7 +42,7 @@ def times():
     timesButton=buildTimesButtons(times)
     return render_template("dateTimeTable/time.html", times=timesButton)
 
-@dateTimeTable.route('/dateAndTime/showButtons', methods=["POST"])
+@dateTimeTable.route('/dateAndTime/step_4', methods=["POST"])
 def showButtons():
     global selectedTime
     selectedTime=request.form["selectedTime"]
@@ -58,12 +58,12 @@ def changeCalendar():
    return jsonify(response)
 
 
-@dateTimeTable.route('/dateAndTime/unvtables', methods=["POST"])
+@dateTimeTable.route('/dateAndTime/step_5', methods=["POST"])
 def unavailableTables():
     unvTables = db_get_unavailable_tables(selectedRestaurant.rid,selectedTime, dateSelected)
     return jsonify(tables=unvTables, nrOfPeople=people)
 
-@dateTimeTable.route('/dateAndTime/bookedTables', methods=["POST"])
+@dateTimeTable.route('/dateAndTime/step_6', methods=["POST"])
 def bookedTables():
     global bookedTables
     bookedTables = request.json()
