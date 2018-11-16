@@ -19,6 +19,7 @@ $(document).ready(function(){
                 $("#selectDate").on("change",function(e){
                     changeCalendar(e,this);
                 });
+                fullDays();
                 console.log(response["people"])
                 $("#peopleInfo").val(response["people"]);
                 $("#bookingInfo").show();
@@ -158,12 +159,18 @@ $(document).ready(function(){
                 $(".calendarItem:not(.disabled)").on("click",function(e){
                     selectDay(e,this);
                 });
+                fullDays();
             }
         };
         xhttp.open("POST", "/dateAndTime/changeCalendar");
         var formData="beginDate="+beginDate;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);
+    }
+    function fullDays()
+    {
+        $(".fullTrue").parent().parent().children(".text-right").children("p").html("<span class=\"badge badge-danger\"><b>FULL</b></span>");
+        $(".fullTrue").parent().parent().addClass("disabled");
     }
 
 });
