@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request
 from datetime import datetime, timedelta
+from flask_mail import Mail, Message
+from datetime import datetime
 from src import app
 from src.models import Restaurant
 from src.templatebuild import buildSelectOptions
@@ -8,6 +10,8 @@ from flask import jsonify
 
 
 dateTimeTable = Blueprint('dateTimeTable', __name__)
+
+mail = Mail(app)
 
 
 @dateTimeTable.route("/dateAndTime", methods=["POST"])
@@ -30,7 +34,18 @@ def dateAndTimePeople():
     periods=mycursor.fetchall()
     periodsOptions=buildSelectOptions(periods)
     calendarOptions=buildSelectOptions(weeks)
-    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers)
+    #Default fullDay
+    mycursor.execute("INSERT INTO booking_info VALUES(30,1,'01'),(31,2,'02'),(32,3,'03'),(33,3,'04'),(34,4,'05'),(35,5,'05')")
+    app.config["DATABASE"].commit()
+    mycursor.execute("INSERT INTO rest_book VALUES(1,30,'01','2018-11-17',1),(1,31,'02','2018-11-17',1),(1,32,'03','2018-11-17',1),(1,33,'04','2018-11-17',1),(1,34,'05','2018-11-17',1)")
+    app.config["DATABASE"].commit()
+    fullDays=daysDisabled(now,periods[0][0])
+    #Remove defaul fullDay
+    mycursor.execute("DELETE FROM rest_book WHERE rest_book.bid IN(30,31,32,33,34,35)")
+    app.config["DATABASE"].commit()
+    mycursor.execute("DELETE FROM booking_info WHERE booking_info.bid IN(30,31,32,33,34,35)")
+    app.config["DATABASE"].commit()
+    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
     response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%d/%m/%Y")}
     return jsonify(response)
@@ -71,12 +86,77 @@ def dateAndTimeCheck():
     thePhone  = request.form["thePhone"]
     theEmail  = request.form["theEmail"]
     theRestaurant = selectedRestaurant.name
+    theRid = selectedRestaurant.rid
+    theAddress = selectedRestaurant.street + ' , ' + str(selectedRestaurant.zip)
     theDate = dateSelected
     thePeople = people
     theTime=selectedTime
+    
+    if (theEmail != ''): #if we confirm booking
+        send_mail(theName,theEmail,theRestaurant,theAddress,theDate,thePeople,theTime)
+        send_reservation_to_db(theName,theEmail,theRestaurant,theAddress,theDate,thePeople,theTime,theRid)
 
     return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
     theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
+
+def send_mail(name,email,restaurant,address,date,people,time):
+    subject = 'Confirmation of booking - 45610'
+    message = 'Hello '+name+', <br> <br>You have booked a table for '+people+' people at : <br>'+restaurant+'<br>'+address+'<br>'+date+' - '+time+' <br> To edit your reservation, click on the link below <br> http://localhost:5000 <br> Best regards, <br> <br>' + restaurant
+    msg = Message(
+        subject=subject,
+        recipients=[email], 
+        html=message
+    )
+    mail.send(msg)  
+    
+def send_reservation_to_db(theName,theEmail,theRestaurant,theAddress,theDate,thePeople,theTime,theRid):
+    mycursor=app.config['DATABASE'].cursor()
+    #connect with the other group responsible for the user accounts
+    #send them information about customer
+    cid = get_new_cid() #get customer id from them in the future
+    
+    date = datetime.strptime(theDate, '%d/%M/%Y')
+    date = datetime.date(date)
+    timeid = get_timeid(theTime)
+
+    query1="INSERT INTO booking_info (cid,additional_info) VALUES ("+str(cid)+",null);"
+    mycursor.execute(query1)
+    
+    bid = get_bid(cid)
+    query2="INSERT INTO rest_book VALUES ("+str(theRid)+","+str(bid)+",0,'"+str(date)+"','"+str(timeid)+"');" #define tid (tableID) as 0 for the moment
+    mycursor.execute(query2)
+    
+    app.config['DATABASE'].commit()
+    return 
+
+def get_new_cid():
+    mycursor=app.config['DATABASE'].cursor()
+    query="SELECT cid FROM booking_info ORDER BY cid DESC LIMIT 1;"
+    mycursor.execute(query)
+    last_cid = mycursor.fetchall()
+    mycursor.close()
+    try :
+            #if the table is not empty we return id + 1, otherwise 0
+            return last_cid[0][0] + 1
+    except:
+        return 0
+    
+def get_timeid(time):
+    mycursor=app.config['DATABASE'].cursor()
+    query="SELECT timeid FROM time_period WHERE time='"+time+"';"
+    mycursor.execute(query)
+    timeid = mycursor.fetchall()
+    mycursor.close()
+    return timeid[0][0]
+    
+
+def get_bid(cid):
+    mycursor=app.config['DATABASE'].cursor()
+    query="SELECT bid FROM booking_info WHERE cid='"+str(cid)+"';"
+    mycursor.execute(query)
+    bid = mycursor.fetchall()
+    mycursor.close()
+    return bid[0][0]
 
 def calculCalendarWeeks(currentDate):
     weeks=[]
@@ -96,5 +176,29 @@ def dayNumberCalendar(currentDate):
         numbers+=[number]
     return numbers
 
+def isDayDisabled(listTable,day,period):
+    tablesNumber=len(listTable)
+    listTable=','.join(listTable)
+    mycursor=app.config["DATABASE"].cursor()
+    query="SELECT time_period.timeid FROM time_period WHERE period='"+str(period)+"';"
+    mycursor.execute(query)
+    times=mycursor.fetchall()
+    timesList=""
+    for time in times:
+        timesList+=str(time[0])+","
+    timesList=timesList[:-1]
+    query="SELECT DISTINCT rest_book.tid FROM rest_book WHERE rest_book.tid IN("+str(listTable)+") and  rest_book.date='"+day+"' and rest_book.timeid IN("+timesList+")";
+    mycursor.execute(query)
+    tableBooked=mycursor.fetchall()
+    return len(tableBooked)==tablesNumber
+
+def daysDisabled(currentDate,period):
+    listTable=["01","02","03","04","05"]
+    daysDisabled=[]
+    beginCalendar = currentDate - timedelta(days=currentDate.weekday())
+    for i in range(0,14):
+        disabled=isDayDisabled(listTable,(beginCalendar+timedelta(days=i)).strftime("%Y-%m-%d"),period)
+        daysDisabled+=[disabled]
+    return daysDisabled
 
 

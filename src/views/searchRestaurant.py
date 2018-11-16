@@ -41,9 +41,3 @@ def fetch_restaurants():
 
 # global restaurant list
 restaurants = fetch_restaurants()
-
-@searchRestaurant.route("/getGeolocation")
-def results():
-	search_req = requests.get("https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyC6SomsDgQgCxpJjweOxWHCWgQWyD5dZVs")
-	search_json = search_req.json()
-	return search_json
