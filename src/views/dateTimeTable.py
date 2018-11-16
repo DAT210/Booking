@@ -44,7 +44,7 @@ def dateAndTimePeople():
     app.config["DATABASE"].commit()
     mycursor.execute("DELETE FROM booking_info WHERE booking_info.bid IN(30,31,32,33,34,35)")
     app.config["DATABASE"].commit()
-    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers)
+    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
     response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%d/%m/%Y")}
     return jsonify(response)
