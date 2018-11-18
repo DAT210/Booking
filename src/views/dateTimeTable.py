@@ -59,7 +59,7 @@ def times():
     times=mycursor.fetchall()
     mycursor.execute("INSERT INTO booking_info VALUES(36,1,'01'),(37,2,'02'),(38,3,'03'),(39,3,'04'),(40,4,'05')")
     app.config["DATABASE"].commit()
-    mycursor.execute("INSERT INTO rest_book VALUES(1,36,'01','2018-11-18',5),(1,37,'02','2018-11-18',5),(1,38,'03','2018-11-18',5),(1,39,'04','2018-11-18',5),(1,40,'05','2018-11-18',5)")
+    mycursor.execute("INSERT INTO rest_book VALUES(1,36,'01','2018-11-18',5,3),(1,37,'02','2018-11-18',5,2),(1,38,'03','2018-11-18',5,2),(1,39,'04','2018-11-18',5,2),(1,40,'05','2018-11-18',5,3)")
     app.config["DATABASE"].commit()
     fullTimes=timeDisabled(dateSelected,times,period)
     mycursor.execute("DELETE FROM rest_book WHERE rest_book.bid IN(36,37,38,39,40)")
