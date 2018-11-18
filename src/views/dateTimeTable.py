@@ -79,9 +79,11 @@ def showButtons():
 def changeCalendar():
     now=datetime.now()
     beginDate=request.form["beginDate"]
+    period=request.form["period"]
     numbers=dayNumberCalendar(datetime.strptime(beginDate, '%d-%m-%Y'))
-    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers)
-    response={"calendar" : templateCalendar,"currentDay":now.strftime("%d/%m/%Y")}
+    fullDays=daysDisabled(now,period)
+    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays)
+    response={"calendar" : templateCalendar,"currentDay":now.strftime("%Y-%m-%d")}
     return jsonify(response)
 
 @dateTimeTable.route('/dateAndTime/step_5', methods=["POST"])

@@ -131,11 +131,11 @@ $(document).ready(function(){
         var i=0;
         var lengthCalendar=dayNumbers.length;
         activeDate=activeDate.split("-");
-        activeDate=new Date(activeDate[2],activeDate[1],activeDate[0]);
+        activeDate=new Date(activeDate[0],activeDate[1],activeDate[2]);
         while(i<lengthCalendar && !activeDateFound)
         {
             var date=$(dayNumbers[i]).data("dateday").split("-");
-            date=new Date(date[2],date[1],date[0]);
+            date=new Date(date[0],date[1],date[2]);
             if(date>=activeDate)
                 activeDateFound=true;
             else
@@ -164,7 +164,8 @@ $(document).ready(function(){
             }
         };
         xhttp.open("POST", "/dateAndTime/changeCalendar");
-        var formData="beginDate="+beginDate;
+        var period=$("#selectPeriod").val();
+        var formData="beginDate="+beginDate+"&period="+period;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);
     }

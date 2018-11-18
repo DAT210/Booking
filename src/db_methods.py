@@ -16,7 +16,7 @@ def db_get_periods():
 def db_get_times(period):
     mycursor=app.config["DATABASE"].cursor()
     try:
-        sql = "SELECT TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period=%s"
+        sql = "SELECT timeid,TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period=%s"
         mycursor.execute(sql, (str(period),))
         times = mycursor.fetchall()
         return times
