@@ -39,14 +39,13 @@ def dateAndTimePeople():
     mycursor.execute("INSERT INTO rest_book VALUES(1,30,'01','2018-11-17',1),(1,31,'02','2018-11-17',1),(1,32,'03','2018-11-17',1),(1,33,'04','2018-11-17',1),(1,34,'05','2018-11-17',1)")
     app.config["DATABASE"].commit()
     fullDays=daysDisabled(now,periods[0][0])
-    #Remove defaul fullDay
     mycursor.execute("DELETE FROM rest_book WHERE rest_book.bid IN(30,31,32,33,34,35)")
     app.config["DATABASE"].commit()
     mycursor.execute("DELETE FROM booking_info WHERE booking_info.bid IN(30,31,32,33,34,35)")
     app.config["DATABASE"].commit()
     templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
-    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%d/%m/%Y")}
+    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%Y-%m-%d")}
     return jsonify(response)
 
 
@@ -57,10 +56,20 @@ def times():
     global dateSelected
     dateSelected=request.form["dateSelected"]
     mycursor=app.config["DATABASE"].cursor()
-    query="SELECT TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period='"+str(period)+"';"
+    query="SELECT timeid,TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period='"+str(period)+"';"
     mycursor.execute(query)
     times=mycursor.fetchall()
-    timesButton=buildTimesButtons(times)
+    mycursor.execute("INSERT INTO booking_info VALUES(30,1,'01'),(31,2,'02'),(32,3,'03'),(33,3,'04'),(34,4,'05'),(35,5,'05')")
+    app.config["DATABASE"].commit()
+    mycursor.execute("INSERT INTO rest_book VALUES(1,30,'01','2018-11-18',5),(1,31,'02','2018-11-18',5),(1,32,'03','2018-11-18',5),(1,33,'04','2018-11-18',5),(1,34,'05','2018-11-18',5)")
+    app.config["DATABASE"].commit()
+    fullTimes=timeDisabled(dateSelected,times,period)
+    #Remove defaul fullDay
+    mycursor.execute("DELETE FROM rest_book WHERE rest_book.bid IN(30,31,32,33,34,35)")
+    app.config["DATABASE"].commit()
+    mycursor.execute("DELETE FROM booking_info WHERE booking_info.bid IN(30,31,32,33,34,35)")
+    app.config["DATABASE"].commit()
+    timesButton=buildTimesButtons(times,fullTimes=fullTimes)
     return render_template("dateTimeTable/time.html", times=timesButton)
 
 @dateTimeTable.route('/dateAndTime/tableVisualisation', methods=["POST"])
@@ -149,5 +158,23 @@ def daysDisabled(currentDate,period):
         disabled=isDayDisabled(listTable,(beginCalendar+timedelta(days=i)).strftime("%Y-%m-%d"),period)
         daysDisabled+=[disabled]
     return daysDisabled
+
+def isTimeDisabled(selectedDate,time,period):
+    listTable=["01","02","03","04","05"]
+    tablesNumber=len(listTable)
+    listTable=','.join(listTable)
+    mycursor=app.config["DATABASE"].cursor()
+    query="SELECT DISTINCT rest_book.tid FROM rest_book JOIN time_period  on rest_book.timeid=time_period.timeid WHERE rest_book.tid IN("+str(listTable)+") AND time_period.period LIKE '"+period+"' AND rest_book.date='"+selectedDate+"' and rest_book.timeid BETWEEN "+str(time[0]-3)+" AND "+str(time[0]+3)+";"
+    mycursor.execute(query)
+    times=mycursor.fetchall()
+    return len(times)==tablesNumber
+
+def timeDisabled(selectedDate,times,period):
+    listTable=["01","02","03","04","05"]
+    timesDisabled=[]
+    for time in times:
+        disabled=isTimeDisabled(selectedDate,time,period)
+        timesDisabled+=[disabled]
+    return timesDisabled
 
 
