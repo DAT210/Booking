@@ -15,9 +15,9 @@ def index():
     coords = []
     ids = []
     for r in restaurants:
-        names.append((r.name))
+        names.append(r.name)
         coords.append([r.latitude, r.longitude])
-        ids.append((r.rid))
+        ids.append(r.rid)
     return render_template('searchRestaurant/index.html', names=names, coords=coords,ids=ids)
 
 

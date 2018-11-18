@@ -17,6 +17,10 @@ label:hover{
     color : #ec1d25;
     font-weight: bold;
 }
+label:active{
+    color : #ec1d25;
+    font-weight: bold;
+}
 .dayCalendar
 {
     background-color: #dc3545;

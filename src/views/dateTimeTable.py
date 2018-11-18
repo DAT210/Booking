@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, request
 from datetime import datetime, timedelta
 from flask_mail import Mail, Message
+from datetime import datetime
 from src import app
 from src.models import Restaurant
+from src.db_methods import db_get_periods, db_get_times, db_get_new_cid, db_get_timeid, db_insert_booking, db_insert_full_day, db_delete_full_day, db_get_times_from_period, db_get_unavailable_tables
 from src.templatebuild import buildSelectOptions
 from src.templatebuild import buildTimesButtons
 from flask import jsonify
@@ -13,36 +15,29 @@ dateTimeTable = Blueprint('dateTimeTable', __name__)
 mail = Mail(app)
 
 
-@dateTimeTable.route("/dateAndTime", methods=["POST"])
+@dateTimeTable.route("/dateAndTime/step_1", methods=["POST"])
 def dateAndTime():
     global selectedRestaurant
     restaurantID = request.form["theRestaurant"]
     selectedRestaurant=Restaurant.fetchRestaurant(restaurantID)
     return render_template('dateTimeTable/dateTime.html', restaurant=selectedRestaurant,restaurantID=restaurantID)
 
-@dateTimeTable.route("/dateAndTime/date", methods=["POST"])
+@dateTimeTable.route("/dateAndTime/step_2", methods=["POST"])
 def dateAndTimePeople():
     global people
     people = request.form["people"]
     now = datetime.now()
     weeks=calculCalendarWeeks(now)
     numbers=dayNumberCalendar(now)
-    mycursor=app.config["DATABASE"].cursor()
-    query="SELECT * FROM period";
-    mycursor.execute(query)
-    periods=mycursor.fetchall()
+    # from db_methods
+    periods = db_get_periods()
+
     periodsOptions=buildSelectOptions(periods)
     calendarOptions=buildSelectOptions(weeks)
-    #Default fullDay
-    mycursor.execute("INSERT INTO booking_info VALUES(30,1,'01'),(31,2,'02'),(32,3,'03'),(33,3,'04'),(34,4,'05'),(35,5,'05')")
-    app.config["DATABASE"].commit()
-    mycursor.execute("INSERT INTO rest_book VALUES(1,30,'01','2018-11-17',1),(1,31,'02','2018-11-17',1),(1,32,'03','2018-11-17',1),(1,33,'04','2018-11-17',1),(1,34,'05','2018-11-17',1)")
-    app.config["DATABASE"].commit()
+    # from db_methods
+    db_insert_full_day()
     fullDays=daysDisabled(now,periods[0][0])
-    mycursor.execute("DELETE FROM rest_book WHERE rest_book.bid IN(30,31,32,33,34,35)")
-    app.config["DATABASE"].commit()
-    mycursor.execute("DELETE FROM booking_info WHERE booking_info.bid IN(30,31,32,33,34,35)")
-    app.config["DATABASE"].commit()
+    db_delete_full_day()
     templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
     response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%Y-%m-%d")}
@@ -50,11 +45,13 @@ def dateAndTimePeople():
 
 
 
-@dateTimeTable.route('/dateAndTime/time', methods=["POST"])
+@dateTimeTable.route('/dateAndTime/step_3', methods=["POST"])
 def times():
     period=request.form["period"]
     global dateSelected
     dateSelected=request.form["dateSelected"]
+    # from db_methods
+    times = db_get_times(period)
     mycursor=app.config["DATABASE"].cursor()
     query="SELECT timeid,TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period='"+str(period)+"';"
     mycursor.execute(query)
@@ -72,8 +69,8 @@ def times():
     timesButton=buildTimesButtons(times,fullTimes=fullTimes)
     return render_template("dateTimeTable/time.html", times=timesButton)
 
-@dateTimeTable.route('/dateAndTime/tableVisualisation', methods=["POST"])
-def chooseTableSelection():
+@dateTimeTable.route('/dateAndTime/step_4', methods=["POST"])
+def showButtons():
     global selectedTime
     selectedTime=request.form["selectedTime"]
     return render_template("dateTimeTable/buttonsTable.html",restaurant=Restaurant)
@@ -87,20 +84,32 @@ def changeCalendar():
     response={"calendar" : templateCalendar,"currentDay":now.strftime("%d/%m/%Y")}
     return jsonify(response)
 
+@dateTimeTable.route('/dateAndTime/step_5', methods=["POST"])
+def unavailableTables():
+    unvTables = db_get_unavailable_tables(selectedRestaurant.rid,selectedTime, dateSelected)
+    return jsonify(tables=unvTables, nrOfPeople=people)
 
-@dateTimeTable.route('/dateAndTime/checkBooking', methods=["POST"])
+@dateTimeTable.route('/dateAndTime/step_6', methods=["POST"])
+def bookedTables():
+    global bookedTables
+    bookedTables = request.json()
+    return render_template("dateAndTime/formCheck.html", restaurant=Restaurant)
+
+@dateTimeTable.route('/dateAndTime/step_7', methods=["POST"])
 def dateAndTimeCheck():
     theName   = request.form["theName"]
     thePhone  = request.form["thePhone"]
     theEmail  = request.form["theEmail"]
     theRestaurant = selectedRestaurant.name
+    theRid = selectedRestaurant.rid
     theAddress = selectedRestaurant.street + ' , ' + str(selectedRestaurant.zip)
     theDate = dateSelected
     thePeople = people
     theTime=selectedTime
     
-    if (theEmail != ''):
+    if (theEmail != ''): #if we confirm booking
         send_mail(theName,theEmail,theRestaurant,theAddress,theDate,thePeople,theTime)
+        store_booking(theName,theEmail,theRestaurant,theAddress,theDate,thePeople,theTime,theRid)
 
     return render_template("dateTimeTable/confirmDate.html", theDate=theDate, theTime=theTime,
     theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
@@ -113,7 +122,15 @@ def send_mail(name,email,restaurant,address,date,people,time):
         recipients=[email], 
         html=message
     )
-    mail.send(msg)
+    mail.send(msg)  
+
+def store_booking(theName,theEmail,theAddress,theDate,theTime,theRid):
+    date = datetime.strptime(theDate, '%d/%M/%Y')
+    date = datetime.date(date)
+    cid = db_get_new_cid()  # this should be from the customer guys (theName, theEmail, theAddress) ->
+    timeid = db_get_timeid(theTime)
+
+    db_insert_booking(theRid, 0, date, timeid, cid, "null")   # define tid (tableID) as 0 for the moment, also add_info is null atm
 
 
 def calculCalendarWeeks(currentDate):
@@ -138,16 +155,19 @@ def isDayDisabled(listTable,day,period):
     tablesNumber=len(listTable)
     listTable=','.join(listTable)
     mycursor=app.config["DATABASE"].cursor()
-    query="SELECT time_period.timeid FROM time_period WHERE period='"+str(period)+"';"
-    mycursor.execute(query)
-    times=mycursor.fetchall()
+
+    # from db_methods
+    times = db_get_times_from_period(period)
     timesList=""
     for time in times:
         timesList+=str(time[0])+","
     timesList=timesList[:-1]
+
+    # not added in db_methods yet
     query="SELECT DISTINCT rest_book.tid FROM rest_book WHERE rest_book.tid IN("+str(listTable)+") and  rest_book.date='"+day+"' and rest_book.timeid IN("+timesList+")";
     mycursor.execute(query)
     tableBooked=mycursor.fetchall()
+
     return len(tableBooked)==tablesNumber
 
 def daysDisabled(currentDate,period):

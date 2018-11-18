@@ -25,7 +25,7 @@ $(document).ready(function(){
                 $("#bookingInfo").show();
             }
         };
-        xhttp.open("POST", "/dateAndTime/date");
+        xhttp.open("POST", "/dateAndTime/step_2");
         var data=$(this).val();
         var formData="people="+data;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -56,7 +56,7 @@ $(document).ready(function(){
                 $(".fullTimeTrue").attr("disabled","true");
             }
         };
-        xhttp.open("POST", "/dateAndTime/time");
+        xhttp.open("POST", "/dateAndTime/step_3");
         var data=$("#selectPeriod").val();
         var formData="period="+data+"&dateSelected="+day;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -76,7 +76,7 @@ $(document).ready(function(){
                 $(".cp-spinner").remove();
             }
         };
-        xhttp.open("POST", "/dateAndTime/checkBooking");
+        xhttp.open("POST", "/dateAndTime/step_7");
         var formData=$(this).serialize();
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
         xhttp.send(formData);
@@ -119,7 +119,7 @@ $(document).ready(function(){
                 });
             }
         };
-        xhttp.open("POST", "/dateAndTime/tableVisualisation");
+        xhttp.open("POST", "/dateAndTime/step_4");
         var formData="selectedTime="+time;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);
@@ -173,5 +173,57 @@ $(document).ready(function(){
         $(".fullTrue").parent().parent().children(".text-right").children("p").html("<span class=\"badge badge-danger\"><b>FULL</b></span>");
         $(".fullTrue").parent().parent().addClass("disabled");
     }
+
+    /*function tableVis(){
+
+        showTableVisualization($("#restaurantIdInfo").val());
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200){
+                var bookedTables = sendTableVisRequest(this.responseText);
+                sendBookedTables(bookedTables);
+                }
+        };
+        xhttp.open("POST", "/dateAndTime/step_5");
+
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send();
+    }
+
+    function sendTableVisRequest(dataJSON) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                return this.responseText;
+            }
+        };
+        xhttp.open("POST", "/tableVisualization");   // ?their url
+        var formData="data=" + dataJSON;
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(formData);
+    }
+
+
+    function showTableVisualization(restaurantName){
+        var theUrl = "http://127.0.0.1:5000/";   // ? their url + /restaurantName
+        var theFrame = $("<iframe></iframe>").attr({"id":"tableSelection","src": theUrl, "height": "350", "width": "600", "scrolling": "no"});
+        $("#restaurantInfo").parent().append(theFrame);
+    }
+
+    function sendBookedTables(dataJSON) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                $("#restaurantInfo").parent().append(this.responseText);
+                $("#checkBooking").on("click",function(e){
+                    checkBooking(e);
+                });
+            }
+        };
+        xhttp.open("POST", "/dateTime/step_6");
+        var formData = "data=" + dataJSON;
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(formData);
+    }*/
 
 });

@@ -10,7 +10,7 @@ $(document).ready(function(){
                 $(".cp-spinner").remove();
             }
         };
-        xhttp.open("POST", "/dateAndTime");
+        xhttp.open("POST", "/dateAndTime/step_1");
         var formData=$(this).serialize();
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
         xhttp.send(formData);
