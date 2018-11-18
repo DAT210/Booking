@@ -56,3 +56,10 @@ label:active{
     cursor :pointer;
     background-color: #ec1d25;
 }
+.fullTimeTrue
+{
+    background-color: gainsboro!important;
+    cursor: context-menu!important;
+    color: black!important;
+    border-color: gainsboro!important;
+}

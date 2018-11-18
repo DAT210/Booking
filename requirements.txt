@@ -5,3 +5,4 @@ pytest==3.8.2
 flask_restful
 requests
 flask_mail
+timedelta
