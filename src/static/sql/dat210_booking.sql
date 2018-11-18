@@ -79,6 +79,7 @@ CREATE TABLE `rest_book` (
   `tid` int(11) NOT NULL,
   `date` date DEFAULT NULL,
   `timeid` int(11) DEFAULT NULL,
+  `people` int(11) DEFAULT NULL,
   PRIMARY KEY (`rid`,`bid`,`tid`),
   KEY `bid` (`bid`),
   KEY `tid` (`tid`),

@@ -4,7 +4,7 @@ from flask_mail import Mail, Message
 from datetime import datetime
 from src import app
 from src.models import Restaurant
-from src.db_methods import db_get_periods, db_get_times, db_get_new_cid, db_get_timeid, db_insert_booking, db_insert_full_day, db_delete_full_day, db_get_times_from_period, db_get_unavailable_tables
+from src.db_methods import db_get_periods, db_get_times, db_get_new_cid, db_get_timeid, db_insert_booking, db_insert_full_day, db_delete_full_day, db_get_times_from_period, db_get_unavailable_tables,db_get_attendance
 from src.templatebuild import buildSelectOptions
 from src.templatebuild import buildTimesButtons
 from flask import jsonify
@@ -37,10 +37,11 @@ def dateAndTimePeople():
     # from db_methods
     db_insert_full_day()
     fullDays=daysDisabled(now,periods[0][0])
+    attendances=attendance(now,periods[0][0])
     db_delete_full_day()
-    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays)
+    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays,attendances=attendances)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
-    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%Y-%m-%d")}
+    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%Y-%m-%d"),"restaurantCapacity":50}
     return jsonify(response)
 
 
@@ -56,15 +57,13 @@ def times():
     query="SELECT timeid,TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period='"+str(period)+"';"
     mycursor.execute(query)
     times=mycursor.fetchall()
-    mycursor.execute("INSERT INTO booking_info VALUES(30,1,'01'),(31,2,'02'),(32,3,'03'),(33,3,'04'),(34,4,'05'),(35,5,'05')")
+    mycursor.execute("INSERT INTO booking_info VALUES(36,1,'01'),(37,2,'02'),(38,3,'03'),(39,3,'04'),(40,4,'05')")
     app.config["DATABASE"].commit()
-    mycursor.execute("INSERT INTO rest_book VALUES(1,30,'01','2018-11-18',5),(1,31,'02','2018-11-18',5),(1,32,'03','2018-11-18',5),(1,33,'04','2018-11-18',5),(1,34,'05','2018-11-18',5)")
+    mycursor.execute("INSERT INTO rest_book VALUES(1,36,'01','2018-11-18',5),(1,37,'02','2018-11-18',5),(1,38,'03','2018-11-18',5),(1,39,'04','2018-11-18',5),(1,40,'05','2018-11-18',5)")
     app.config["DATABASE"].commit()
     fullTimes=timeDisabled(dateSelected,times,period)
-    #Remove defaul fullDay
-    mycursor.execute("DELETE FROM rest_book WHERE rest_book.bid IN(30,31,32,33,34,35)")
-    app.config["DATABASE"].commit()
-    mycursor.execute("DELETE FROM booking_info WHERE booking_info.bid IN(30,31,32,33,34,35)")
+    mycursor.execute("DELETE FROM rest_book WHERE rest_book.bid IN(36,37,38,39,40)")
+    mycursor.execute("DELETE FROM booking_info WHERE booking_info.bid IN(36,37,38,39,40)")
     app.config["DATABASE"].commit()
     timesButton=buildTimesButtons(times,fullTimes=fullTimes)
     return render_template("dateTimeTable/time.html", times=timesButton)
@@ -82,8 +81,9 @@ def changeCalendar():
     period=request.form["period"]
     numbers=dayNumberCalendar(datetime.strptime(beginDate, '%d-%m-%Y'))
     fullDays=daysDisabled(now,period)
-    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays)
-    response={"calendar" : templateCalendar,"currentDay":now.strftime("%Y-%m-%d")}
+    attendances=attendance(now,period)
+    templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays,attendances=attendances)
+    response={"calendar" : templateCalendar,"currentDay":now.strftime("%Y-%m-%d"),"restaurantCapacity":50}
     return jsonify(response)
 
 @dateTimeTable.route('/dateAndTime/step_5', methods=["POST"])
@@ -199,4 +199,11 @@ def timeDisabled(selectedDate,times,period):
         timesDisabled+=[disabled]
     return timesDisabled
 
+def attendance(currentDate,period):
+
+    beginCalendar = currentDate - timedelta(days=currentDate.weekday())
+    attendance=[]
+    for i in range(0,14):
+        attendance+=[db_get_attendance((beginCalendar+timedelta(days=i)).strftime("%Y-%m-%d"),period)]
+    return attendance
 

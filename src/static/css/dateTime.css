@@ -63,3 +63,15 @@ label:active{
     color: black!important;
     border-color: gainsboro!important;
 }
+.attendanceLow
+{
+    background-color: #d0ffd4;
+}
+.attendanceMiddle
+{
+    background-color: #fffed7;
+}
+.attendanceHigh
+{
+    background-color: #f5dad8;
+}

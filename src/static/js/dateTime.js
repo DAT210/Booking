@@ -12,6 +12,7 @@ $(document).ready(function(){
                 $("#rowButton").append(response["buttonsCalendar"]);
                 $("#restaurantInfo").parent().append(response["calendar"]);
                 disableCalendarDays(response["currentDay"]);
+                attendanceColor(response["restaurantCapacity"]);
                 $(".cp-spinner").remove();
                 $(".calendarItem:not(.disabled)").on("click",function(e){
                     selectDay(e,this);
@@ -157,6 +158,7 @@ $(document).ready(function(){
                 $("#restaurantInfo").parent().append(response["calendar"]);
                 $(".cp-spinner").remove();
                 disableCalendarDays(response["currentDay"]);
+                attendanceColor(response["restaurantCapacity"]);
                 $(".calendarItem:not(.disabled)").on("click",function(e){
                     selectDay(e,this);
                 });
@@ -173,6 +175,21 @@ $(document).ready(function(){
     {
         $(".fullTrue").parent().parent().children(".text-right").children("p").html("<span class=\"badge badge-danger\"><b>FULL</b></span>");
         $(".fullTrue").parent().parent().addClass("disabled");
+    }
+    function attendanceColor(restaurantCapacity)
+    {
+        var numbersPeople=$(".numberPeople");
+        var lengthCalendar=numbersPeople.length;
+        for(var i=0;i<lengthCalendar;i++)
+        {
+            if($(numbersPeople[i]).text()>(restaurantCapacity*0.75))
+                $(numbersPeople[i]).parent().parent().addClass("attendanceHigh");
+            else if($(numbersPeople[i]).text()>(restaurantCapacity/2))
+                $(numbersPeople[i]).parent().parent().addClass("attendanceMiddle");
+            else
+                $(numbersPeople[i]).parent().parent().addClass("attendanceLow");
+
+        }
     }
 
     /*function tableVis(){
