@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, jsonify
 from jinja2 import TemplateNotFound
 import mysql.connector
 import requests
@@ -20,6 +20,16 @@ def index():
         ids.append((r.rid))
     return render_template('searchRestaurant/index.html', names=names, coords=coords,ids=ids)
 
+#SHOW_PURCHASES_ON_DATE AND GET_PURCHASES_ON_DATE ARE JUST FOR TESTING. WILL BE FETCHED FROM STATS GROUP LATER
+@searchRestaurant.route("/statistics/purchases/<string:date>")
+def show_purchases_on_date(date):
+	return jsonify(get_purchases_on_date(date))
+
+def get_purchases_on_date(date):
+	purchases_on_date = {
+				"amount_of_purchases": 3
+			}
+	return purchases_on_date
 
 def fetch_restaurants():
 	cur = conn.cursor()
