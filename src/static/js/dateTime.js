@@ -21,7 +21,7 @@ $(document).ready(function(){
                     changeCalendar(e,this);
                 });
                 fullDays();
-                console.log(response["people"])
+                console.log(response["people"]);
                 $("#peopleInfo").val(response["people"]);
                 $("#bookingInfo").show();
             }
@@ -77,8 +77,13 @@ $(document).ready(function(){
                 $(".cp-spinner").remove();
             }
         };
-        xhttp.open("POST", "/dateAndTime/step_7");
-        var formData=$(this).serialize();
+        xhttp.open("POST", "/confirmPage/step_7");
+        people=$("#peopleInfo").val();
+        time=$("#timeInfo").val();
+        date=$("#dateInfo").val();
+        rid=$("#restaurantIdInfo").val();
+        var formData="restaurant="+rid+"&people="+people+"&date="+date+"&time="+time+"&";
+        formData+=$(this).serialize();
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
         xhttp.send(formData);
     })
@@ -94,8 +99,14 @@ $(document).ready(function(){
                 $(".cp-spinner").remove();
             }
         };
-        xhttp.open("POST", "/dateAndTime/checkBooking");
-        var formData=$("#formCheck").serialize();
+        console.log("tamere");
+        xhttp.open("POST", "/confirmPage/step_7");
+        people=$("#peopleInfo").val();
+        time=$("#timeInfo").val();
+        date=$("#dateInfo").val();
+        rid=$("#restaurantIdInfo").val();
+        var formData="restaurant="+rid+"&people="+people+"&date="+date+"&time="+time+"&";
+        formData+=$("#formCheck").serialize();
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
         xhttp.send(formData);
     }
@@ -120,7 +131,7 @@ $(document).ready(function(){
                 });
             }
         };
-        xhttp.open("POST", "/dateAndTime/step_4");
+        xhttp.open("POST", "/tableVisualization/step_4");
         var formData="selectedTime="+time;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);

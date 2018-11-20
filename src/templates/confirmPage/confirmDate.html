@@ -17,7 +17,11 @@ Booking confirmation
             </div>
             <div class="card-body">
                 <div class="card-text" style="text-align:left">
-                    <label>Date: </label><p style="font-weight: bold; display: inline"> {{theDate}} </p><br>
+                    <input type="hidden" id="restaurantIdInfo" value="{{ rid }}">
+                    <input type="hidden" id="dateInfo" value="{{ theDate.strftime('%Y-%m-%d') }}">
+                    <input type="hidden" id="peopleInfo" value="{{ thePeople }}">
+                    <input type="hidden" id="timeInfo" value="{{ theTime }}">
+                    <label>Date: </label><p style="font-weight: bold; display: inline"> {{theDate.strftime('%d/%m/%Y')}} </p><br>
                     <label>Timeperiod: </label><p style="font-weight: bold; display: inline"> {{theTime}} </p><br>
                     <label>Restaurant: </label><p style="font-weight: bold; display: inline"> {{theRestaurant}}</p><br>
                     <label>Amount of people: </label><p style="font-weight: bold; display: inline"> {{thePeople}}</p><br>
@@ -33,7 +37,7 @@ Booking confirmation
 {% if theName=="" %}
     <br>
     <div class="col-lg-6 col-md-6 col-sm-6">
-        <form id="formConfirmBooking" action="{{ url_for('dateTimeTable.dateAndTimeCheck') }}" method="POST">
+        <form id="formConfirmBooking" action="{{ url_for('confirmPage.dateAndTimeCheck') }}" method="POST">
             <label>Name </label><input type="text" name="theName" required><br>
             <label>Phone </label><input type="tel" name="thePhone" required><br>
             <label>Email </label><input type="email" name="theEmail" required><br>
