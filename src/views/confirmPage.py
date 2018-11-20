@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template,request
 from flask_mail import Mail, Message
 from datetime import datetime
-from src.db_methods import db_insert_booking,db_get_new_cid,db_get_timeid
+from src.db_methods import db_insert_booking,db_get_new_cid,db_get_timeid,db_get_bid
 confirmPage = Blueprint('confirmPage', __name__)
 from src import app
 from src.models import Restaurant
@@ -26,15 +26,17 @@ def dateAndTimeCheck():
     theTime=request.form["time"]
 
     if (theEmail != ''): #if we confirm booking
-        send_mail(theName,theEmail,theRestaurant.name,theAddress,theDate.strftime("%d/%m/%Y"),thePeople,theTime)
         store_booking(theName,theEmail,theAddress,theDate,thePeople,theTime,theRid)
+        bid = db_get_bid(theEmail,theDate,theRid)
+        send_mail(theName,theEmail,theRestaurant.name,theAddress,theDate.strftime("%d/%m/%Y"),thePeople,theTime,bid)
+        
 
     return render_template("templates/confirmPage/confirmDate.html", theDate=theDate, theTime=theTime,
                            theRestaurant=theRestaurant.name, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail, rid=theRid)
 
-def send_mail(name,email,restaurant,address,date,people,time):
+def send_mail(name,email,restaurant,address,date,people,time,bid):
     subject = 'Confirmation of booking - 45610'
-    message = 'Hello '+name+', <br> <br>You have booked a table for '+people+' people at : <br>'+restaurant+'<br>'+address+'<br>'+date+' - '+time+' <br> To edit your reservation, click on the link below <br> http://localhost:5000 <br> Best regards, <br> <br>' + restaurant
+    message = 'Hello '+name+', <br> <br>You have booked a table for '+people+' people at : <br>'+restaurant+'<br>'+address+'<br>'+date+' - '+time+' <br> To edit your reservation, click on the link below <br> http://localhost:5000/editBooking/'+bid+'<br> Best regards, <br> <br>' + restaurant
     msg = Message(
         subject=subject,
         recipients=[email],
