@@ -51,6 +51,7 @@ def db_fetch_opening_hours(rid):
 		tuple_of_data = mycursor.fetchall()[0]
 	except mysql.connector.Error as err:
 		print("Error: {}".format(err.msg))
+        
 	finally:
 		mycursor.close()
 
