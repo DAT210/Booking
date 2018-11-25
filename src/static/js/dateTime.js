@@ -20,6 +20,9 @@ $(document).ready(function(){
                 $("#selectDate").on("change",function(e){
                     changeCalendar(e,this);
                 });
+                $("#selectPeriod").on("change",function(e){
+                    changeCalendar(e,this);
+                });
                 fullDays();
                 console.log(response["people"]);
                 $("#peopleInfo").val(response["people"]);
@@ -160,7 +163,7 @@ $(document).ready(function(){
     function changeCalendar(e,itemClicked)
     {
 
-        var beginDate=$(itemClicked).val();
+        var beginDate=$("#selectDate").val();
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
