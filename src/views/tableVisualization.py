@@ -11,7 +11,7 @@ from src.models import Restaurant
 def showButtons():
     global selectedTime
     selectedTime=request.form["selectedTime"]
-    return render_template("templates/tableVisualization/buttonsTable.html", restaurant=Restaurant)
+    return render_template("tableVisualization/buttonsTable.html", restaurant=Restaurant)
 
 @tableVisualization.route('/tableVisualization/step_5', methods=["POST"])
 def unavailableTables():

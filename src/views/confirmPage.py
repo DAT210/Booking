@@ -27,11 +27,11 @@ def dateAndTimeCheck():
 
     if (theEmail != ''): #if we confirm booking
         store_booking(theName,theEmail,theAddress,theDate,thePeople,theTime,theRid)
-        bid = db_get_bid(theEmail,theDate,theRid)
-        send_mail(theName,theEmail,theRestaurant.name,theAddress,theDate.strftime("%d/%m/%Y"),thePeople,theTime,bid)
+        #bid = db_get_bid(theEmail,theDate,theRid)
+        send_mail(theName,theEmail,theRestaurant.name,theAddress,theDate.strftime("%d/%m/%Y"),thePeople,theTime,"1")
         
 
-    return render_template("templates/confirmPage/confirmDate.html", theDate=theDate, theTime=theTime,
+    return render_template("confirmPage/confirmDate.html", theDate=theDate, theTime=theTime,
                            theRestaurant=theRestaurant.name, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail, rid=theRid)
 
 def send_mail(name,email,restaurant,address,date,people,time,bid):
