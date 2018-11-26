@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request
 from datetime import datetime, timedelta
-from datetime import datetime
 from src import app
 from src.models import Restaurant
 from src.db_methods import db_get_periods, db_get_times,db_insert_full_day, db_delete_full_day, db_get_times_from_period,db_get_attendance
@@ -13,13 +12,13 @@ dateTimeTable = Blueprint('dateTimeTable', __name__)
 
 
 
-@dateTimeTable.route("/dateAndTime/step_1", methods=["POST"])
+@dateTimeTable.route("/step_1/people", methods=["POST"])
 def dateAndTime():
     restaurantID = request.form["theRestaurant"]
     selectedRestaurant=Restaurant.fetchRestaurant(restaurantID)
     return render_template('dateTimeTable/dateTime.html', restaurant=selectedRestaurant,restaurantID=restaurantID)
 
-@dateTimeTable.route("/dateAndTime/step_2", methods=["POST"])
+@dateTimeTable.route("/step_2/date", methods=["POST"])
 def dateAndTimePeople():
     people = request.form["people"]
     now = datetime.now()
@@ -42,12 +41,10 @@ def dateAndTimePeople():
 
 
 
-@dateTimeTable.route('/dateAndTime/step_3', methods=["POST"])
+@dateTimeTable.route('/step_3/time', methods=["POST"])
 def times():
     period=request.form["period"]
     dateSelected=request.form["dateSelected"]
-    # from db_methods
-    times = db_get_times(period)
     mycursor=app.config["DATABASE"].cursor()
     query="SELECT timeid,TIME_FORMAT(time,'%H:%i') FROM time_period WHERE period='"+str(period)+"';"
     mycursor.execute(query)
@@ -64,7 +61,7 @@ def times():
     return render_template("dateTimeTable/time.html", times=timesButton)
 
 
-@dateTimeTable.route('/dateAndTime/changeCalendar', methods=["POST"])
+@dateTimeTable.route('/changeCalendar', methods=["POST"])
 def changeCalendar():
     now=datetime.now()
     beginDate=request.form["beginDate"]

@@ -6,3 +6,4 @@ flask_restful
 requests
 flask_mail
 timedelta
+flask_cors

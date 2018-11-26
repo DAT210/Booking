@@ -1,15 +1,4 @@
-{% extends "layout.html" %}
 
-{% block title %}
-Front page
-{% endblock %}
-
-{% block styles %}
-    {{ super()}}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dateTime.css')}}">
-{% endblock %}
-{% block script %}
-    {{ super()}}
     <script>
       var map, infoWindow,pos,latRestaurant,longRestaurant;
       latRestaurant=0;
@@ -78,13 +67,9 @@ Front page
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6SomsDgQgCxpJjweOxWHCWgQWyD5dZVs&callback=initMap">
     </script>
-    <script src="{{ url_for('static',filename='js/reservation.js') }}"></script>
-{% endblock %}
 
-
-{% block content %}
-<section class="bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15" style="background-image: url({{ url_for('static',filename='images/bg-title-page-02.jpg') }});"><h2 class="tit6 t-center"> Reservation</h2></section>
-<section class="section-reservation bg1-pattern p-t-100 p-b-113">
+<section class="bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15" style="background-image: url({{ url_for('static',filename='origin/images/bg-title-page-02.jpg') }});"><h2 class="tit6 t-center"> Reservation</h2></section>
+<div class="section-reservation bg1-pattern p-t-100 p-b-113">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 p-b-30">
@@ -147,9 +132,5 @@ Front page
             </div>
         </div>
     </div>
-</section>
 <br>
-
-
-
-{% endblock %}
+</div>

@@ -1,11 +1,8 @@
 from flask import Blueprint, render_template
-from jinja2 import TemplateNotFound
 import mysql.connector
-import requests
 searchRestaurant = Blueprint('searchRestaurant', __name__)
 from src import app
 from src.models import Restaurant
-from datetime import timedelta
 
 # sends along a tuple for each restaurant consisting of name,latitude,longitude
 @searchRestaurant.route('/')

@@ -7,13 +7,13 @@ from src import app
 from src.models import Restaurant
 mail = Mail(app)
 
-@confirmPage.route('/confirmPage/step_6', methods=["POST"])
+@confirmPage.route('/step_6/confirmPage', methods=["POST"])
 def bookedTables():
     global bookedTables
     # bookedTables = request.json()
     return render_template("dateAndTime/formCheck.html", restaurant=Restaurant)
 
-@confirmPage.route('/confirmPage/step_7', methods=["POST"])
+@confirmPage.route('/step_7/confirmPage', methods=["POST"])
 def dateAndTimeCheck():
     theName   = request.form["theName"]
     thePhone  = request.form["thePhone"]
@@ -27,11 +27,11 @@ def dateAndTimeCheck():
 
     if (theEmail != ''): #if we confirm booking
         store_booking(theName,theEmail,theAddress,theDate,thePeople,theTime,theRid)
-        bid = db_get_bid(theEmail,theDate,theRid)
-        send_mail(theName,theEmail,theRestaurant.name,theAddress,theDate.strftime("%d/%m/%Y"),thePeople,theTime,bid)
+        #bid = db_get_bid(theEmail,theDate,theRid)
+        send_mail(theName,theEmail,theRestaurant.name,theAddress,theDate.strftime("%d/%m/%Y"),thePeople,theTime,"1")
         
 
-    return render_template("templates/confirmPage/confirmDate.html", theDate=theDate, theTime=theTime,
+    return render_template("confirmPage/confirmDate.html", theDate=theDate, theTime=theTime,
                            theRestaurant=theRestaurant.name, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail, rid=theRid)
 
 def send_mail(name,email,restaurant,address,date,people,time,bid):
