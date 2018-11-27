@@ -7,7 +7,7 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 variables:
-  image: 'web'
+  image: 'booking'
   latestTag: '$(image):latest'
 
 steps:
