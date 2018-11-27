@@ -9,6 +9,8 @@ pool:
 variables:
   image: 'booking'
   latestTag: '$(image):latest'
+  group: DockerId
+  group: pswd
 
 steps:
 - script: |
