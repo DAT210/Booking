@@ -12,7 +12,7 @@ sys.path.append(currentPath)
 currentPath=os.path.abspath(os.path.join(currentPath, os.pardir))
 sys.path.append(currentPath)
 from src.python_mysql_dbconfig import read_db_config
-docker =False
+docker = True
 if docker:
     filename = "configDocker.ini"
 else:
