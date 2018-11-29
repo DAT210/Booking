@@ -13,7 +13,7 @@ def buildTimesButtons(arrayVal):
         if i==0:
             htmlButtons+="<div class='row'>"
         i+=1
-        htmlButtons+="<div class='col-lg-6'><button class='btn btn-danger form-control'>"+str(val[0])+"</button></div>"
+        htmlButtons+="<div class='col-lg-6'><button class='btn btn-danger btnTime form-control'>"+str(val[0])+"</button></div>"
         if i==2:
             htmlButtons+="</div><br>"
             i=0

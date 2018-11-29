@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block styles %}
+    {{ super()}}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/dateTime.css')}}">
+{% endblock %}
+
+{% block script %}
+{{ super()}}
+<script src="{{ url_for('static',filename='js/editPage.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3" id="restaurantInfo">
+        <div class="card">
+            <div class="card-header">
+                <h3>Restaurant</h3>
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    <p style="font-weight: bold">{{restaurant.name}}</p>
+                    <p style="font-weight: bold">{{restaurant.street}}</p>
+                    <p style="font-weight: bold">{{restaurant.zip}}</p>
+                    <p style="font-weight: bold">Telephone: {{restaurant.phone}}</p>
+                </div>
+                <input id="restaurantIdInfo" value="{{ restaurantID}}" type="hidden">
+            </div>
+        </div>
+        <div id="bookingInfo" class="card">
+            <div class="card-header">
+                <h3>Your booking</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label">Number of people</label>
+                    <!-- disabled class="form-control" -->
+                    <input name="peopleInfo" id="peopleInfo" value={{people}}>
+
+                    <label class="form-label">Date</label>
+                    <input name="peopleInfo" id="peopleInfo" value={{theDate}}>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6" id="timeColumn">
+        <div class="card">
+            <div class="card-header">
+                <h3>Hours</h3>
+            </div>
+            <div class="card-body">
+                <div class="card-text">
+                    {{ times|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+
+<div class="col-lg-6" id="chooseTableVisualisation">
+    <div class="card">
+        <div class="card-header">
+            <h3>Book a table</h3>
+        </div>
+        <div class="card-body">
+            <div class="card-text">
+                <div class="row">
+                    <div class='col-lg-6'>
+                        <button class='btn btn-danger form-control'>Choose your table</button>
+                    </div>
+                    <div class='col-lg-6'>
+                        <button class='btn btn-danger form-control'>Get a random table</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="row">
+        <form id="formCheck" action="{{ url_for('dateTimeTable.dateAndTimeCheck') }}" method="POST">
+            <input type="hidden" name="theName" value="">
+            <input type="hidden" name="thePhone" value="">
+            <input type="hidden" name="theEmail" value="">
+            <input type="hidden" name="theRestaurant" value="{{restaurant.name}}">
+            <input type="submit" id="checkBooking" name="checkBooking" class="btn btn-dark" value="Check booking">
+        </form>
+    </div>
+</div>
