@@ -1,23 +1,5 @@
 # Booking
 
-# Installation
-To run our project you need to have docker and MySQL installed.
-
-docker -v
-Docker download: https://www.docker.com/
-MySQL download: https://www.mysql.com/downloads/
-
-Clone repository
-git clone https://github.com/DAT210/Booking.git
-
-Build the images and run containers
-docker-compose up -d --build
-
-http://127.0.0.1:4000/ (Docker) 
-http://192.168.99.100:4000/ (Docker toolbox)
-
-# Booking
-
 Full booking process of a restaurant
 
 ## Getting Started
