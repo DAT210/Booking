@@ -79,6 +79,7 @@ CREATE TABLE `rest_book` (
   `tid` int(11) NOT NULL,
   `date` date DEFAULT NULL,
   `timeid` int(11) DEFAULT NULL,
+  `people` int(11) DEFAULT NULL,
   PRIMARY KEY (`rid`,`bid`,`tid`),
   KEY `bid` (`bid`),
   KEY `tid` (`tid`),
@@ -128,6 +129,35 @@ LOCK TABLES `restaurant` WRITE;
 INSERT INTO `restaurant` VALUES (1,'Royale Stavanger','90010000',4005,'Kongsgårdbakken 1','5.730274','58.970052'),(2,'Mexico Randaberg','90020000',4070,'Tungenesveien 2','5.617925','59.000448'),(3,'Famoso Sandnes','90030000',4306,'Julie Eges Gate 6','5.739098','58.850582');
 /*!40000 ALTER TABLE `restaurant` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `opening_hours`
+--
+
+DROP TABLE IF EXISTS `opening_hours`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `opening_hours` (
+  `rid` int(11) NOT NULL,
+  `weekdays_open` time DEFAULT NULL,
+  `weekdays_close` time DEFAULT NULL,
+  `satsun_open` time DEFAULT NULL,
+  `satsun_close` time DEFAULT NULL,
+  PRIMARY KEY (`rid`),
+  CONSTRAINT `opening_hours_ibfk_1` FOREIGN KEY (`rid`) REFERENCES `restaurant` (`rid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `opening_hours`
+--
+
+LOCK TABLES `opening_hours` WRITE;
+/*!40000 ALTER TABLE `opening_hours` DISABLE KEYS */;
+INSERT INTO `opening_hours` VALUES (1,'10:00:00','22:00:00','12:00:00','23:00:00'),(2,'09:00:00','22:00:00','11:00:00','23:00:00'),(3,'09:00:00','21:00:00','10:00:00','23:00:00');
+/*!40000 ALTER TABLE `opening_hours` ENABLE KEYS */;
+UNLOCK TABLES;
+
 
 --
 -- Table structure for table `time_period`
