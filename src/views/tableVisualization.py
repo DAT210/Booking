@@ -3,7 +3,7 @@ from jinja2 import TemplateNotFound
 import mysql.connector
 import requests
 from datetime import datetime
-from src.db_methods import db_get_unavailable_tables, db_get_timeid, db_check_tables
+from src.db_methods import db_get_unavailable_tables, db_get_timeid
 tableVisualization = Blueprint('tableVisualization', __name__)
 from src import app
 from src.models import Restaurant
