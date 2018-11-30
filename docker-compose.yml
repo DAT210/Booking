@@ -1,18 +1,20 @@
-version: "3"
-services:
-  app:
-    build: .
-    depends_on:
-      - db
+version: '3.7' #Version 3.5 or above.
+services: 
+  booking:
+    container_name: booking
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "5000:5000"
-    volumes:
-      - .:/app
-  db:
-    image: mysql:8.0.12
-    ports:
-      - "32000:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    volumes:
-      - ./src/static/sql:/docker-entrypoint-initdb.d/:ro
+      - 4001:4001
+
+    networks: 
+      - frontend
+      # ...
+
+networks: 
+  # ...
+  frontend:
+  # The following line ensures the full name of the network will be 'frontend'
+    name: frontend
