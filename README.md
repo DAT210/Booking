@@ -18,7 +18,7 @@ The back-end version, it needs the front from the web repository https://github.
 
 ## Run the application with Docker
 
-# Standalone version
+## Standalone version
 Use cd into the directory where you cloned the project. From here you have to run these commands: 
   - docker-compose -f "docker-compose.yml" up -d --build
   - docker-compose up
@@ -28,7 +28,7 @@ You can try “127.0.0.1:5000” if you are on windows
 
 The second option is to type “VIRTUAL_MACHINE_IP:5000”. You can find your own virtual machine ip by simply typing in “docker-machine ip” in a command line terminal. 
 
-# Back-end version :
+## Back-end version :
 This version don’t rely on another docker Image which run the database but on the host.
 
 You need to have MySQL installed and edit the “src/static/configDocker.ini” to manage the connection.
