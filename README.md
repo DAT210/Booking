@@ -1,7 +1,37 @@
 # Booking
 
 Full booking process of a restaurant
-
+## Structure
+```
+├─src 
+│ ├───static
+│ │   ├───css
+│ │   ├───fonts   
+│ │   ├───images
+│ │   ├───js
+│ │   ├───configDocker.ini
+│ │   ├───config.ini
+│ │   └───sql       
+│ ├───templates
+│ │   ├─confimPage
+│ │   ├─dateTimeTable
+│ │   ├─editPage
+│ │   ├─searchRestaurant
+│ │   ├─tableVisualization
+│ │   └─layout.html
+│ ├───views
+│ │   ├─confimPage.py
+│ │   ├─dateTimeTable.py
+│ │   ├─searchRestaurant.py
+│ │   └─tableVisualization.py
+│ ├───__init__.py
+│ ├───db_methods.py
+│ ├───models.py
+│ ├───python_mysql_db_config.py
+│ └─templatebuild.py
+└─test
+  └─test_booking.py
+```
 ## Getting Started
 
 To run our application you need to have both MySQL and Docker installed. If you do not have them installed you can do it from these pages
@@ -35,6 +65,32 @@ You need to have MySQL installed and edit the “src/static/configDocker.ini” 
 
 You need to run the SQL script “src/static/sql/dat210_booking.sql” to initiate the database.
 
+The previous steps done, run the project with the following command :
+```
+docker-compose up --build
+```
+## Run the application Locally
+
+The following procedures are the same for both versions
+
+As the back-end version you need to set up the MySQL database and to execute the script “src/static/sql/dat210_booking.sql” .
+You also need to configure the database connection in the “src/static/config.ini” file.
+```
+[mysql]
+host = localhost
+database = bookingdb
+user = youruser
+password = yourpassword
+```
+Before to run the project the variable “Docker” in “src/__init_.py” need to be set to “False”
+```
+Docker=False
+```
+The previous steps done, you can run the project with the following command :
+
+```
+python src/__init__.py
+```
 
 ## Contributors
 
