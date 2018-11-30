@@ -41,7 +41,7 @@ def dateAndTimeCheck():
                   "1")
 
     return render_template("confirmPage/confirmDate.html", theDate=theDate, theTime=theTime,
-                           theRestaurant=theRestaurant.name, theName=theName, thePeople=thePeople, thePhone=thePhone,
+                           theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone,
                            theEmail=theEmail, rid=theRid, theTables=theTables)
 
 
