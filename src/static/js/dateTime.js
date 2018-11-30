@@ -85,7 +85,8 @@ $(document).ready(function(){
         time=$("#timeInfo").val();
         date=$("#dateInfo").val();
         rid=$("#restaurantIdInfo").val();
-        var formData="restaurant="+rid+"&people="+people+"&date="+date+"&time="+time+"&";
+        tables=$("#bookedTables").val();
+        var formData="restaurant="+rid+"&people="+people+"&date="+date+"&time="+time+"&tables="+tables+"&";
         formData+=$(this).serialize();
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
         xhttp.send(formData);
@@ -129,8 +130,11 @@ $(document).ready(function(){
                     "<input name=\"timeInfo\" id=\"timeInfo\" disabled=\"\" class=\"form-control\">" +
                     "</div>");
                 $("#timeInfo").val(time);
-                $("#checkBooking").on("click",function(e){
-                    checkBooking(e);
+                $("#chooseTable").on("click", function(e){
+                   tableVis(e);
+                });
+                $("#randomTable").on("click", function(e){
+                   randomTable(e);
                 });
             }
         };
@@ -206,9 +210,17 @@ $(document).ready(function(){
         }
     }
 
-    /*function tableVis(){
+   function tableVis(event){
+        event.preventDefault();
+        if ($("#tableSelection").length) {
+            return
+        }
+        time=$("#timeInfo").val();
+        date=$("#dateInfo").val();
+        rid=$("#restaurantIdInfo").val();
+        people=$("#peopleInfo").val();
 
-        showTableVisualization($("#restaurantIdInfo").val());
+        showTableVisualization(rid);
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200){
@@ -218,14 +230,16 @@ $(document).ready(function(){
         };
         xhttp.open("POST", "/dateAndTime/step_5");
 
+        var formData="date="+date+"&period="+time+"&rid="+rid+"&people="+people;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send();
+        xhttp.send(formData);
     }
 
     function sendTableVisRequest(dataJSON) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
                 return this.responseText;
             }
         };
@@ -236,26 +250,92 @@ $(document).ready(function(){
     }
 
 
-    function showTableVisualization(restaurantName){
+    function showTableVisualization(restaurantID){
+        // $("#chooseTableVisualisation").remove();
         var theUrl = "http://127.0.0.1:5000/";   // ? their url + /restaurantName
         var theFrame = $("<iframe></iframe>").attr({"id":"tableSelection","src": theUrl, "height": "350", "width": "600", "scrolling": "no"});
-        $("#restaurantInfo").parent().append(theFrame);
+        $("#chooseTableVisualisation").append(theFrame);
     }
 
     function sendBookedTables(dataJSON) {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                $("#restaurantInfo").parent().append(this.responseText);
-                $("#checkBooking").on("click",function(e){
+                if (!$("#checkBooking").length){
+                    $("#restaurantInfo").parent().append(this.responseText);
+                    $("#formCheck").on("click",function(e){
                     checkBooking(e);
-                });
+                    });
+                }
+                else {
+                    $("#formCheck").parent().remove();
+                    $("#restaurantInfo").parent().append(this.responseText);
+                    $("#formCheck").on("click",function(e){
+                    checkBooking(e);
+                    });
+                }
             }
         };
-        xhttp.open("POST", "/dateTime/step_6");
-        var formData = "data=" + dataJSON;
+        xhttp.open("POST", "/confirmPage/step_6");
+        var formData = dataJSON;
         xhttp.setRequestHeader("Content-Type", "application/json");
         xhttp.send(formData);
-    }*/
+    }
+
+    function randomTable(event){
+        event.preventDefault();
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if (!$("#checkBooking").length){
+                    $("#restaurantInfo").parent().append(this.responseText);
+                    $("#formCheck").on("click",function(e){
+                    checkBooking(e);
+                    });
+                }
+                else {
+                    $("#formCheck").parent().remove();
+                    $("#restaurantInfo").parent().append(this.responseText);
+                    $("#formCheck").on("click",function(e){
+                    checkBooking(e);
+                    });
+                }
+            }
+        };
+        xhttp.open("POST", "/confirmPage/step_6");
+        var tablejson = {tables: [1, 2, 3]};  // without checking if tables are already taken this will often error
+        // var check = checkTableAvailability(tablejson);
+        // console.log(check);
+        // while (check === "0") {
+        //     for (var a = 0; a < tablejson.tables.length; a++){
+        //         tablejson.tables[a] += 3;
+        //     }
+        //     check = checkTableAvailability(tablejson);
+        //     console.log(tablejson.tables)
+        // }
+        var formData = JSON.stringify(tablejson);
+        xhttp.setRequestHeader("Content-Type", "application/json");
+        xhttp.send(formData);
+    }
+
+    // function checkTableAvailability(tablejson){
+    //     var xhttp = new XMLHttpRequest();
+    //     xhttp.onreadystatechange = function () {
+    //         if (this.readyState == 4 && this.status == 200) {
+    //                 var result = JSON.parse(this.responseText);
+    //                 // console.log(result["check"]);
+    //                 return result["check"]
+    //             }
+    //         };
+    //     tablejson.time = $("#timeInfo").val();
+    //     tablejson.date = $("#dateInfo").val();
+    //     tablejson.rid = $("#restaurantIdInfo").val();
+    //     xhttp.open("POST", "/tableVisualization/availability");
+    //     var formData = JSON.stringify(tablejson);
+    //     xhttp.setRequestHeader("Content-Type", "application/json");
+    //     xhttp.send(formData);
+    // }
+
 
 });

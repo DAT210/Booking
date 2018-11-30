@@ -64,7 +64,7 @@ def db_get_unavailable_tables(rid, time, date):
     return unvTables
 
 
-def db_insert_booking(rid, tid, date, timeid, cid,people, add_info):
+def db_insert_booking(rid, tables, date, timeid, cid,people, add_info):
     mycursor = app.config["DATABASE"].cursor()
     try:
         sql = "INSERT INTO booking_info (cid,additional_info) VALUES (%s, %s)"
@@ -72,8 +72,9 @@ def db_insert_booking(rid, tid, date, timeid, cid,people, add_info):
 
         bid = db_get_bid(cid)
 
-        sql = "INSERT INTO rest_book VALUES (%s, %s, %s, %s, %s,%s)"
-        mycursor.execute(sql, (str(rid), str(bid), str(tid), str(date), str(timeid),str(people)))
+        for t in tables.split(","):
+            sql = "INSERT INTO rest_book VALUES (%s, %s, %s, %s, %s,%s)"
+            mycursor.execute(sql, (str(rid), str(bid), t, str(date), str(timeid),str(people)))
 
         app.config["DATABASE"].commit()
     except mysql.connector.Error as err:
@@ -159,6 +160,25 @@ def db_get_attendance(date,period):
         if str(sum) !="None":
             return int(sum)
         return 0
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
+
+def db_check_tables(rid, date, timeid, tableids):
+    mycursor = app.config['DATABASE'].cursor()
+    print(rid)
+    print(date)
+    print(timeid)
+    try:
+        sql = "SELECT bid FROM rest_book WHERE rid=%s AND date=%s AND timeid=%s AND tid IN {0}".format(tuple(tableids))
+        print(sql)
+        mycursor.execute(sql, (str(rid), str(date), str(timeid)))
+        f = mycursor.fetchall()
+        print(f)
+        if len(f) != 0:
+            return 0
+        return 1
     except mysql.connector.Error as err:
         print("Error: {}".format(err.msg))
     finally:

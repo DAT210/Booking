@@ -1,0 +1,9 @@
+<div class="row">
+    <form id="formCheck" action="{{ url_for('confirmPage.dateAndTimeCheck') }}" method="POST">
+        <input type="hidden" name="theName" value="">
+        <input type="hidden" name="thePhone" value="">
+        <input type="hidden" name="theEmail" value="">
+        <input id="bookedTables" type="hidden" name="tables" value="{{ bookedTables }}">
+        <input type="submit" id="checkBooking" name="checkBooking" class="btn btn-dark" value="Check booking">
+    </form>
+</div>
