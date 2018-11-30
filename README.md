@@ -1,3 +1,4 @@
+![alt text](https://github.com/DAT210/Booking/blob/master/src/static/images/logoBooking.PNG)
 # Booking
 
 Full booking process of a restaurant
