@@ -17,41 +17,23 @@ Booking confirmation
             </div>
             <div class="card-body">
                 <div class="card-text" style="text-align:left">
-                    <input type="hidden" id="restaurantIdInfo" value="{{ rid }}">
-                    <input type="hidden" id="dateInfo" value="{{ theDate.strftime('%Y-%m-%d') }}">
-                    <input type="hidden" id="peopleInfo" value="{{ thePeople }}">
-                    <input type="hidden" id="timeInfo" value="{{ theTime }}">
-                    <input type="hidden" id="bookedTables" value="{{ theTables }}">
-                    <label>Date: </label><p style="font-weight: bold; display: inline"> {{theDate.strftime('%d/%m/%Y')}} </p><br>
+                    <label>Date: </label><p style="font-weight: bold; display: inline"> {{theDate}} </p><br>
                     <label>Timeperiod: </label><p style="font-weight: bold; display: inline"> {{theTime}} </p><br>
                     <label>Restaurant: </label><p style="font-weight: bold; display: inline"> {{theRestaurant.name}}</p><br>
                     <label>Amount of people: </label><p style="font-weight: bold; display: inline"> {{thePeople}}</p><br>
-                    {% if theName!="" %}
-                        <label>Name: </label><p style="font-weight: bold; display: inline"> {{theName}}</p><br>
-                        <label>Phone: </label><p style="font-weight: bold; display: inline"> {{thePhone}}</p><br>
-                        <label>Email: </label><p style="font-weight: bold; display: inline"> {{theEmail}}</p><br>
-                    {% endif %}
+                    <label>Name: </label><p style="font-weight: bold; display: inline"> {{ theName }}</p><br>
+                    <label>Phone: </label><p style="font-weight: bold; display: inline"> {{thePhone}}</p><br>
+                    <label>Email: </label><p style="font-weight: bold; display: inline"> {{theEmail}}</p><br>
                 </div>
             </div>
         </div>
     </div>
-{% if theName=="" %}
-    <br>
-    <div class="col-lg-6 col-md-6 col-sm-6">
-        <form id="formConfirmBooking" action="{{ url_for('confirmPage.dateAndTimeCheck') }}" method="POST">
-            <label>Name </label><input type="text" name="theName" required><br>
-            <label>Phone </label><input type="tel" name="thePhone" required><br>
-            <label>Email </label><input type="email" name="theEmail" required><br>
-            <input type="submit" class="btn btn-dark" value="Confirm booking">
-        </form>
-    </div>
-{% else %}
 <div class="row">
-    <br>
+    <br> 
     <div class="col-lg-9 col-md-9 col-sm-9">
         <h2>Your booking has been received!</h2>
         <form id="formEditBooking" action=" {{url_for('dateTimeTable.summaryEditPage')}} " method="POST">
-
+            
             <input type="hidden" name="theName" value={{theName}}>
             <input type="hidden" name="thePhone" value={{thePhone}}>
             <input type="hidden" name="theEmail" value={{theEmail}}>
@@ -60,7 +42,7 @@ Booking confirmation
             <input type="hidden" name="theTime" value={{theTime}}>
             <input type="hidden" name="thePeople" value={{thePeople}}>
 
-            <input type="submit" class="btn btn-dark" value="Edit your booking">
+            <input type="submit" class="btn btn-dark" value="Edit your booking"> 
         </form>
         <br>
         <form id="formMainPage" method="GET">
@@ -68,7 +50,6 @@ Booking confirmation
         </form>
     </div>
 </div>
-{% endif %}
 </div>
 <script type="text/javascript" src="{{ url_for('static',filename='js/dateTime.js') }}"></script>
 

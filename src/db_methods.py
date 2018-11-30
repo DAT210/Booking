@@ -165,21 +165,21 @@ def db_get_attendance(date,period):
     finally:
         mycursor.close()
 
-def db_check_tables(rid, date, timeid, tableids):
-    mycursor = app.config['DATABASE'].cursor()
-    print(rid)
-    print(date)
-    print(timeid)
-    try:
-        sql = "SELECT bid FROM rest_book WHERE rid=%s AND date=%s AND timeid=%s AND tid IN {0}".format(tuple(tableids))
-        print(sql)
-        mycursor.execute(sql, (str(rid), str(date), str(timeid)))
-        f = mycursor.fetchall()
-        print(f)
-        if len(f) != 0:
-            return 0
-        return 1
-    except mysql.connector.Error as err:
-        print("Error: {}".format(err.msg))
-    finally:
-        mycursor.close()
+# def db_check_tables(rid, date, timeid, tableids):
+#     mycursor = app.config['DATABASE'].cursor()
+#     print(rid)
+#     print(date)
+#     print(timeid)
+#     try:
+#         sql = "SELECT bid FROM rest_book WHERE rid=%s AND date=%s AND timeid=%s AND tid IN {0}".format(tuple(tableids))
+#         print(sql)
+#         mycursor.execute(sql, (str(rid), str(date), str(timeid)))
+#         f = mycursor.fetchall()
+#         print(f)
+#         if len(f) != 0:
+#             return 0
+#         return 1
+#     except mysql.connector.Error as err:
+#         print("Error: {}".format(err.msg))
+#     finally:
+#         mycursor.close()

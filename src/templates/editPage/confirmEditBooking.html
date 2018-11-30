@@ -1,0 +1,46 @@
+
+
+{% extends "layout.html" %}
+
+{% block title %}
+Edit confirmation
+{% endblock %}
+
+{% block content %}
+{% if theEditDate == theDate %}
+<p><font color="green">Date: </font>{{theEditDate}} </p>
+{% else %}
+<p><font color="black">Date: </font>{{theEditDate}} </p>
+
+{%if theEditTime == theTime}
+<p><font color="green">Time: </font>{{theEditTime}} </p>
+{% else %}
+<p><font color="black">Time: </font>{{theEditTime}} </p>
+
+{% if theEditRestaurant == theRestaurant}
+<p><font color="green">Restaurant: </font>{{theEditRestaurant}}</p>
+{% else %}
+<p><font color="black">Restaurant: </font>{{theEditRestaurant}}</p>
+
+{% if theEditPeople == thePeople}
+<p><font color="green">People:</font> {{theEditPeople}}</p>
+{% else %}
+<p><font color="black">People:</font> {{theEditPeople}}</p>
+
+{% if theEditName == theName %}
+<p><font color="green">Name: </font>{{theEditName}}</p>
+{% else %}
+<p><font color="black">Name: </font>{{theEditName}}</p>
+
+{% if  %}
+<p><font color="green">Phone: </font>{{theEditPhone}}</p>
+{% else %}
+<p><font color="black">Phone: </font>{{theEditPhone}}</p>
+
+{% if theEditEmail == theEmail %}
+<p><font color="green">Email: </font>{{theEditEmail}}</p>
+{% else %}
+<p><font color="black">Email: </font>{{theEditEmail}}</p>
+
+<p>The reservation has been edited successfully</p>
+{% endblock %}

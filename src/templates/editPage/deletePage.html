@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+
+{% block styles %}
+    {{ super()}}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/dateTime.css')}}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15" style="background-image: url({{ url_for('static',filename='images/bg-title-page-02.jpg') }});">
+<h2 class="tit6 t-center"> Reservation</h2>
+</section>
+<div class="container">
+    <div id="deltePage" class=" col-lg-12" style="margin: auto;text-align: center">
+        <div>
+                <br>
+                <br>
+                <br>
+            <div class="card-header">
+                <h3>Booking deleted</h3>
+            </div>
+            <div class="card-body">
+                <br>
+                <br>
+                <p>Your booking has been deleted successfully</p>
+                <br>
+                <br>
+            </div>
+            <form id="formMainPage" method="GET">
+                    <input type="submit" class="btn btn-dark" value="Return to main page">
+            </form>
+            <br>
+            <br>
+            <br>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
