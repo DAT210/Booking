@@ -32,7 +32,7 @@ def dateAndTimeCheck():
         
 
     return render_template("confirmPage/confirmDate.html", theDate=theDate, theTime=theTime,
-                           theRestaurant=theRestaurant.name, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail, rid=theRid)
+                           theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail, rid=theRid)
 
 def send_mail(name,email,restaurant,address,date,people,time,bid):
     subject = 'Confirmation of booking - 45610'

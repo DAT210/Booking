@@ -1,0 +1,59 @@
+
+    <section class="bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15" style="background-image: url({{ url_for('static',filename='origin/images/bg-title-page-02.jpg') }});"><h2 class="tit6 t-center"> Reservation</h2></section>
+    <section class="section-reservation bg1-pattern p-t-100 p-b-113">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 p-b-30">
+                    <div class="t-center">
+                        <span class="tit2 t-center">Reservation</span>
+                        <h3 class="tit3 t-center m-b-35 m-t-2">Edit your book table</h3>
+                    </div>
+                </div>
+                <div id="summaryPage" class="row">
+                    <div class=" offset-lg-2 col-lg-4" id="bookingInfoEdit">
+                        <div class="card">
+                            <div class="card-header">
+                                Booking summary
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text" style="text-align:left">
+                                    <label>Restaurant: </label><p style="font-weight: bold; display: inline"> {{theRestaurant.name}}</p><br>
+                                    <label>Name: </label><p style="font-weight: bold; display: inline"> {{theName}}</p><br>
+                                    <label>Phone: </label><p style="font-weight: bold; display: inline"> {{thePhone}}</p><br>
+                                    <label>Email: </label><p style="font-weight: bold; display: inline"> {{theEmail}}</p><br>
+                                    <label>Date: </label><p style="font-weight: bold; display: inline"> {{theDate}} </p><br>
+                                    <label>Timeperiod: </label><p style="font-weight: bold; display: inline"> {{theTime}} </p><br>
+                                    <label>Amount of people: </label><p style="font-weight: bold; display: inline"> {{thePeople}}</p><br>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                    </div>
+
+                    <div>
+                        <form id="EditBooking" action="/booking/updatebooking" method="POST">
+                            <p>
+                                <button id="edit" name="edit" type="submit" class="btn btn-dark" style="float: right">Edit the booking:
+                                </button>
+                            </p>
+                            <br>
+                            <input type="hidden" name="theName" value="{{theName}}">
+                            <input type="hidden" name="thePhone" value="{{thePhone}}">
+                            <input type="hidden" name="theEmail" value="{{theEmail}}">
+                            <input type="hidden" name="theRestaurant" value="{{ theRestaurant.rid }}">
+                            <input type="hidden" name="theDate" value = "{{theDate}}">
+                            <input type="hidden" name="theTime" value="{{theTime}}">
+                            <input type="hidden" name="thePeople" value="{{thePeople}}">
+                        </form>
+
+                        <form id="DeltedBooking" action=" {{url_for('editPage.removeBooking')}} " method="POST">
+                            <input type="hidden" name="theRestaurant" value="{{ theRestaurant.rid }}">
+                            <p>
+                                <button id="deleted" name="deleted" type="submit" class="btn btn-danger" style="float: right">Delete the booking:
+                                </button>
+                            </p>
+                        </form>
+                    </div>

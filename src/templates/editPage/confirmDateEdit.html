@@ -1,0 +1,43 @@
+
+    <div class="row">
+        <div class="col-lg-6" id="bookingInfo">
+            <div class="card">
+                <div class="card-header">
+                    Booking summary
+                </div>
+                <div class="card-body">
+                    <div class="card-text" style="text-align:left">
+                        <label>Date: </label><p style="font-weight: bold; display: inline"> {{theDate}} </p><br>
+                        <label>Timeperiod: </label><p style="font-weight: bold; display: inline"> {{theTime}} </p><br>
+                        <label>Restaurant: </label><p style="font-weight: bold; display: inline"> {{theRestaurant.name}}</p><br>
+                        <label>Amount of people: </label><p style="font-weight: bold; display: inline"> {{thePeople}}</p><br>
+                        <label>Name: </label><p style="font-weight: bold; display: inline"> {{ theName }}</p><br>
+                        <label>Phone: </label><p style="font-weight: bold; display: inline"> {{thePhone}}</p><br>
+                        <label>Email: </label><p style="font-weight: bold; display: inline"> {{theEmail}}</p><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <br>
+            <div class="col-lg-9 col-md-9 col-sm-9">
+                <h2>Your booking has been received!</h2>
+                <form id="formEditBooking" action="/booking/summary" method="POST">
+
+                    <input type="hidden" name="theName" value={{theName}}>
+                    <input type="hidden" name="thePhone" value={{thePhone}}>
+                    <input type="hidden" name="theEmail" value={{theEmail}}>
+                    <input type="hidden" name="theRestaurant" value={{theRestaurant.rid}}>
+                    <input type="hidden" name="theDate" value = {{theDate}}>
+                    <input type="hidden" name="theTime" value={{theTime}}>
+                    <input type="hidden" name="thePeople" value={{thePeople}}>
+
+                    <input type="submit" class="btn btn-dark" value="Edit your booking">
+                </form>
+                <br>
+                <form id="formMainPage" method="GET">
+                    <input type="submit" class="btn btn-dark" value="Return to main page">
+                </form>
+            </div>
+        </div>
+    </div>

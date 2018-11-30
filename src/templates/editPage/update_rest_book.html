@@ -1,0 +1,62 @@
+
+    <section class="bg-title-page flex-c-m p-t-160 p-b-80 p-l-15 p-r-15" style="background-image: url({{ url_for('static',filename='images/bg-title-page-02.jpg') }});">
+        <h2 class="tit6 t-center"> Reservation</h2>
+    </section>
+    <section class="section-reservation bg1-pattern p-t-100 p-b-113">
+        <div id="cabeceraEdit" class="card" style="width:75%;margin: auto;text-align: center">
+            <div class="card-header">
+                <h3 style="margin-top: 30px;margin-bottom: 20px;font-weight: bold">Booking updating</h3>
+            </div>
+            <div class="card-body">
+                <p id="nameEdit">{{theName}}</p>
+                <br>
+                <p id="phoneEdit">{{thePhone}}</p>
+                <br>
+                <p id="emailEdit">{{theEmail}}</p>
+                <br>
+            </div>
+        </div>
+        <br>
+        <div id="updatePage" class="card" style="width:75%;margin: auto;text-align: center">
+            <div class="card-body"  style="width:85%;margin: 0 auto;text-align: center">
+                <h2 style="margin-top: 30px;margin-bottom: 20px;font-weight: bold; text-align: center">Edit your booking</h2>
+                <div class="card-body" style="width:45%; margin: 0 auto; text-align: justify">
+                    <form id="formNumberPeopleEdit" action=" {{url_for('editPage.UpdatenumberPeople')}} " method="POST">
+                        <input type="hidden" name="theRestaurant" value = {{theRestaurant}}>
+                        <p style="text-align: center">Number of people: {{thePeople}}
+                            <button id="edit" name="edit" type="submit" class="btn btn-default" style="float: right">
+                                <img src="{{ url_for('static', filename='group1/images/edit.png') }}" width="25" height="25">
+                            </button>
+                        </p>
+                    </form>
+                    <br>
+                    <br>
+                    <form id="formDateEdit" action=" {{url_for('editPage.UpdateDateEdit')}} " method="POST">
+                        <input type="hidden" id="theDate" name="theDate" value = {{theDate}}>
+                        <input id="numberPeople" type="hidden" name="people" value = {{thePeople}}>
+                        <input type="hidden" id="theRestaurant" name="theRestaurant" value = "{{theRestaurant}}">
+                        <p style="text-align: center">Date: {{theDate}}
+                            <button id="edit" name="edit" type="submit" class="btn btn-default" style="float: right">
+                                <img src="{{ url_for('static', filename='group1/images/edit.png') }}" width="25" height="25">
+                            </button>
+                        </p>
+                    </form>
+                    <br>
+                    <br>
+                    <form id="formTimeEdit" action=" {{url_for('editPage.UpdatetimeEdit')}} " method="POST">
+                        <input type="hidden" name="theTime" value={{theTime}}>
+
+                        <p style="text-align: center">Time: {{theTime}}
+                            <button id="edit" name="edit" type="submit" class="btn btn-default" style="float: right">
+                                <img src="{{ url_for('static', filename='group1/images/edit.png') }}" width="25" height="25">
+                            </button>
+                        </p>
+                    </form>
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
