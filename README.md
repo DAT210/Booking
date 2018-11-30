@@ -44,7 +44,7 @@ You also have to clone our repository to your computer:
 
 The application exist in two versions :
 The standalone version,the front and the back are not separated and work in an autonomous way. This version can be pulled from the “master” branch of our directory
-The back-end version, it needs the front from the web repository https://github.com/DAT210/web and both need to run simultaneously.This version can be pulled from the “production” branch https://github.com/DAT210/Booking/tree/production.Furthermore if you only want our front part, you can pull the “group1-booking branch” https://github.com/DAT210/web/tree/group1-booking
+The back-end version, it needs the front from the web repository https://github.com/DAT210/web and both need to run simultaneously.This version can be pulled from the “production” branch https://github.com/DAT210/Booking/tree/production. Furthermore if you only want our front part, you can pull the “group1-booking branch” https://github.com/DAT210/web/tree/group1-booking
 
 ## Run the application with Docker
 
