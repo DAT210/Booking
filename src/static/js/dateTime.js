@@ -228,7 +228,7 @@ $(document).ready(function(){
                 sendBookedTables(bookedTables);
                 }
         };
-        xhttp.open("POST", "/dateAndTime/step_5");
+        xhttp.open("POST", "/tableVisualization/step_5");
 
         var formData="date="+date+"&period="+time+"&rid="+rid+"&people="+people;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
