@@ -50,7 +50,7 @@ Booking confirmation
     <br>
     <div class="col-lg-9 col-md-9 col-sm-9">
         <h2>Your booking has been received!</h2>
-        <form id="formEditBooking" action=" {{url_for('dateTimeTable.summaryEditPage')}} " method="POST">
+        <form id="formEditBooking" action=" {{url_for('dateTimeTable.summaryEditPage', bid=theBid)}} ">
 
             <input type="hidden" name="theName" value={{theName}}>
             <input type="hidden" name="thePhone" value={{thePhone}}>

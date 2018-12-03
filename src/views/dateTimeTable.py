@@ -2,8 +2,9 @@ from flask import Blueprint, render_template, request
 from datetime import datetime, timedelta
 from datetime import datetime
 from src import app
+import mysql.connector
 from src.models import Restaurant
-from src.db_methods import db_get_periods, db_get_times,db_insert_full_day, db_delete_full_day, db_get_times_from_period,db_get_attendance
+from src.db_methods import get_restaurantName, db_get_timeid, db_get_restBookInfo, db_get_customerInfo, db_get_periods, db_get_times,db_insert_full_day, db_delete_full_day, db_get_times_from_period,db_get_attendance
 from src.templatebuild import buildSelectOptions
 from src.templatebuild import buildTimesButtons
 from flask import jsonify
@@ -83,27 +84,58 @@ def dateAndTimeCheckEdit():
     theDate = request.form["theDate"]
     thePeople = request.form["thePeople"]
     theTime=request.form["theTime"]
+    bid = request.form["theBid"]
+    date = theDate.strftime('%Y-%m-%d')
+    timeid = db_get_timeid(theTime)
 
-    # if (theEmail != ''):
-    #     send_mail(theName,theEmail,theRestaurant,theAddress,theDate,thePeople,theTime)
+    update_rest_book(bid, date, timeid, thePeople)
 
     return render_template("editPage/confirmDateEdit.html", theDate=theDate, theTime=theTime,
                            theRestaurant=selectedRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
 
-@dateTimeTable.route('/editPage/summaryEditPage', methods=["POST"])
-def summaryEditPage():
-    theName = request.form["theName"]
-    thePhone = request.form["thePhone"]
-    theEmail = request.form["theEmail"]
-    theRestaurant = Restaurant.fetchRestaurant(request.form["theRestaurant"])
-    theDate = request.form["theDate"]
-    thePeople = request.form["thePeople"]
-    theTime=request.form["theTime"]
 
+def update_rest_book(bid, date, timeid, thePeople):
+    conn = app.config["DATABASE"]
+    mycursor=conn.cursor()
+    try:
+        pass
+        query =  "UPDATE rest_book SET date = %s, timeid = %s, people = %s WHERE bid = %s"
+        print(date)
+        print(timeid)
+        print(thePeople)
+        print(bid)
+        
+        mycursor.execute(query, (str(date), str(timeid), str(thePeople), str(bid),))
+        conn.commit()
+
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+        print("done")
+    finally:
+        mycursor.close()
+        print("done2")
+
+@dateTimeTable.route('/editPage/summaryEditPage/<bid>')
+def summaryEditPage(bid):
+    info = db_get_customerInfo(bid)
+    info_list = info[0][0].split("/")
+    theName = info_list[0]
+    thePhone = info_list[1]
+    theEmail = info_list[2]
+    restBookInfo = db_get_restBookInfo(bid)
+    theRestaurant = restBookInfo[0][0]
+    theDate = restBookInfo[0][2]
+    theTime= restBookInfo[0][3]
+    thePeople = restBookInfo[0][4]
+    theRestaurantName = get_restaurantName(theRestaurant)
+    theBid = bid
+    print("rid2 ", theRestaurant)
     return render_template("editPage/summaryEditPage.html", theDate=theDate, theTime=theTime,
-                           theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
-@dateTimeTable.route('/editPage/updateBooking', methods=["POST"])
-def updateBooking():
+                           theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, 
+                           thePhone=thePhone, theEmail=theEmail, theBid=theBid)
+
+@dateTimeTable.route('/editPage/updateBooking/<bid>', methods=["POST"])
+def updateBooking(bid):
     theDate = request.form["theDate"]
     thePeople = request.form["thePeople"]
     theTime=request.form["theTime"]
@@ -111,15 +143,18 @@ def updateBooking():
     thePhone = request.form["thePhone"]
     theEmail = request.form["theEmail"]
     theRestaurant=request.form["theRestaurant"]
+    print("restaurant: ",theRestaurant)
+    theBid = bid
 
     return render_template("editPage/update_rest_book.html", thePeople=thePeople,theDate=theDate,
-                           theTime=theTime,theName=theName,thePhone=thePhone, theEmail=theEmail,theRestaurant=theRestaurant)
+                           theTime=theTime,theName=theName,thePhone=thePhone, theEmail=theEmail,
+                           theRestaurant=theRestaurant, theBid=theBid)
 
 @dateTimeTable.route('/editPage/UpdatenumberPeople', methods=["POST"])
 def UpdatenumberPeople():
-
+    
     theRestaurant = Restaurant.fetchRestaurant(request.form["theRestaurant"])
-    return render_template("editPage/dateTimeEdit.html",restaurant=theRestaurant.name,
+    return render_template("editPage/dateTimeEdit.html",restaurant=theRestaurant,
                            restaurantID=request.form["theRestaurant"])
 
 @dateTimeTable.route('/editPage/UpdateDateEdit', methods=["POST"])
@@ -167,46 +202,28 @@ def UpdatetimeEdit():
     timesButton=buildTimesButtons(times,fullTimes=fullTimes)
     return render_template("editPage/timeEdit.html", times=timesButton,restaurant=restaurant)
 
-@dateTimeTable.route('/editPage/removeBooking', methods=["POST"])
-def removeBooking():
-    cid=1
-    rid = request.form["theRestaurant"]
-    print(cid)
-    conn = app.config["DATABASE"]
-    mycursor = conn.cursor()
-    query = "SELECT bid FROM booking_info WHERE cid=%s "
-    mycursor.execute(query,(str(cid),))
-    bid = mycursor.fetchall()
-
-    # conn = app.config["DATABASE"]
-    # mycursor = conn.cursor()
-    # query = "SELECT * FROM booking_info WHERE cid= %s"
-    # # val = CONSEGUIR CID DE LA API?????
-    # mycursor.execute(query, val)
-    # booking_info = mycursor.fetchall()
-    # bid = booking_info.1
-
-    tid = 1
-
-    remove_rest_book(rid,bid,tid)
-
+@dateTimeTable.route('/editPage/removeBooking/<bid>', methods=["POST"])
+def removeBooking(bid):
+    
+    remove_rest_book(bid)
+    print(bid)
     return render_template("editPage/deletePage.html")
 
-def remove_rest_book(rid,bid,tid):
+def remove_rest_book(bid):
     conn = app.config["DATABASE"]
     mycursor=conn.cursor()
 
-    # try:
-    query = "DELETE FROM rest_book WHERE rid = %s AND bid = %s AND tid = %s"
-    mycursor.execute(query, (str(rid),str(bid),str(tid)))
-    conn.commit()
-
-    # except Error as error:
-    #      print(error)
-
-    # finally:
-    # accept the change
-    mycursor.close()
+    try:
+        pass
+        query = "DELETE FROM rest_book WHERE bid = %s"
+        mycursor.execute(query, (str(bid),))
+        conn.commit()
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+        print("done")
+    finally:
+        mycursor.close()
+        print("done2")
 
 
 @dateTimeTable.route('/dateAndTime/changeCalendar', methods=["POST"])

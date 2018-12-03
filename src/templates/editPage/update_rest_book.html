@@ -36,6 +36,7 @@
         <div class="card-body" style="width:45%; margin: 0 auto; text-align: justify">
             <form id="formNumberPeopleEdit" action=" {{url_for('dateTimeTable.UpdatenumberPeople')}} " method="POST">
                 <input type="hidden" name="theRestaurant" value = {{theRestaurant}}>
+                <input type="hidden" name="thebid" value = {{theBid}}>
                 <p style="text-align: center">Number of people: {{thePeople}} 
                     <button id="edit" name="edit" type="submit" class="btn btn-default" style="float: right">
                         <img src="{{ url_for('static', filename='images/icons/edit.png') }}" width="25" height="25">
@@ -48,6 +49,7 @@
                 <input type="hidden" id="theDate" name="theDate" value = {{theDate}}>
                 <input id="numberPeople" type="hidden" name="people" value = {{thePeople}}>
                 <input type="hidden" id="theRestaurant" name="theRestaurant" value = "{{theRestaurant}}">
+                <input type="hidden" name="thebid" value = {{theBid}}>
                 <p style="text-align: center">Date: {{theDate}}
                     <button id="edit" name="edit" type="submit" class="btn btn-default" style="float: right">
                         <img src="{{ url_for('static', filename='images/icons/edit.png') }}" width="25" height="25">
