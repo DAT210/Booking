@@ -4,7 +4,7 @@ from datetime import datetime
 from src import app
 import mysql.connector
 from src.models import Restaurant
-from src.db_methods import get_restaurantName, db_get_timeid, db_get_restBookInfo, db_get_customerInfo, db_get_periods, db_get_times,db_insert_full_day, db_delete_full_day, db_get_times_from_period,db_get_attendance
+from src.db_methods import get_restaurantName, db_get_time, db_get_timeid, db_get_restBookInfo, db_get_customerInfo, db_get_periods, db_get_times,db_insert_full_day, db_delete_full_day, db_get_times_from_period,db_get_attendance
 from src.templatebuild import buildSelectOptions
 from src.templatebuild import buildTimesButtons
 from flask import jsonify
@@ -125,8 +125,9 @@ def summaryEditPage(bid):
     restBookInfo = db_get_restBookInfo(bid)
     theRestaurant = restBookInfo[0][0]
     theDate = restBookInfo[0][2]
-    theTime= restBookInfo[0][3]
+    theTimeId= restBookInfo[0][3]
     thePeople = restBookInfo[0][4]
+    theTime = db_get_time(theTimeId)
     theRestaurantName = get_restaurantName(theRestaurant)
     theBid = bid
     print("rid2 ", theRestaurant)

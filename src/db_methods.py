@@ -25,6 +25,18 @@ def db_get_times(period):
     finally:
         mycursor.close()
 
+def db_get_time(timeid):
+    mycursor=app.config["DATABASE"].cursor()
+    try:
+        sql = "SELECT TIME_FORMAT(time,'%H:%i') FROM time_period WHERE timeid=%s"
+        mycursor.execute(sql, (str(timeid),))
+        times = mycursor.fetchall()
+        return times[0][0]
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
+
 def db_get_unavailable_tables(rid, time, date):
     timeid = db_get_timeid(time)
     mycursor = app.config["DATABASE"].cursor()
