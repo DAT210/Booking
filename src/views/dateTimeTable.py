@@ -74,8 +74,8 @@ def chooseTableSelectionEdit():
     theRestaurant=Restaurant.fetchRestaurant(request.form["theRestaurant"])
     return render_template("editPage/buttonsTableEdit.html",restaurant=theRestaurant,theName=theName,thePhone=thePhone,theEmail=theEmail)
 
-@dateTimeTable.route('/editPage/checkBookingEdit', methods=["POST"])
-def dateAndTimeCheckEdit():
+@dateTimeTable.route('/editPage/checkBookingEdit/', methods=["POST"])
+def dateAndTimeCheckEdit(bid):
     theName   = request.form["theName"]
     thePhone  = request.form["thePhone"]
     theEmail  = request.form["theEmail"]
@@ -84,28 +84,28 @@ def dateAndTimeCheckEdit():
     theDate = request.form["theDate"]
     thePeople = request.form["thePeople"]
     theTime=request.form["theTime"]
-    bid = request.form["theBid"]
-    date = theDate.strftime('%Y-%m-%d')
+    # bid = request.form["theBid"]
+    # date = theDate.strftime('%Y-%m-%d')
     timeid = db_get_timeid(theTime)
 
-    update_rest_book(bid, date, timeid, thePeople)
+    update_rest_book(bid, theDate, timeid, thePeople)
 
     return render_template("editPage/confirmDateEdit.html", theDate=theDate, theTime=theTime,
                            theRestaurant=selectedRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
 
 
-def update_rest_book(bid, date, timeid, thePeople):
+def update_rest_book(bid, theDate, timeid, thePeople):
     conn = app.config["DATABASE"]
     mycursor=conn.cursor()
     try:
         pass
         query =  "UPDATE rest_book SET date = %s, timeid = %s, people = %s WHERE bid = %s"
-        print(date)
+        print(theDate)
         print(timeid)
         print(thePeople)
         print(bid)
         
-        mycursor.execute(query, (str(date), str(timeid), str(thePeople), str(bid),))
+        mycursor.execute(query, (str(theDate), str(timeid), str(thePeople), str(bid),))
         conn.commit()
 
     except mysql.connector.Error as err:
