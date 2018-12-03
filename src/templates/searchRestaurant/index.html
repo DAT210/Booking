@@ -112,7 +112,7 @@ Front page
                             {% set myDirection = "showDirection("+(i+1)|string+")" %}
                                 <tr>
                                     <td>
-                                        <label class="label{{i}}" for="radio{{names[i]}} onclick={{myDirection}}">{{names[i]}}</label>
+                                        <label class="label{{i}}" for="radio{{names[i]}}" onclick="{{myDirection}}">{{names[i]}}</label>
                                         <input id="radio{{names[i]}}" type="radio" class="radio{{i}}" name="theRestaurant"  value={{ids[i]}}>
                                     </td>
                                     <td>
