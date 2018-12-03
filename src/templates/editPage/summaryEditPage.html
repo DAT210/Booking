@@ -49,7 +49,7 @@ Edit or remove a reservation
         </div>
 
     <div>
-        <form id="EditBooking" action=" {{url_for('dateTimeTable.updateBooking')}} " method="POST">
+        <form id="EditBooking" action=" {{url_for('dateTimeTable.updateBooking', bid=theBid)}} " method="POST">
         <p>Edit the booking:
             <button id="edit" name="edit" type="submit" class="btn btn-default" style="float: right">
                     <span class="glyphicon glyphicon-pencil"></span>
@@ -59,13 +59,13 @@ Edit or remove a reservation
         <input type="hidden" name="theName" value="{{theName}}">
         <input type="hidden" name="thePhone" value="{{thePhone}}">
         <input type="hidden" name="theEmail" value="{{theEmail}}">
-        <input type="hidden" name="theRestaurant" value="{{ theRestaurant.rid }}">
+        <input type="hidden" name="theRestaurant" value="{{ theRestaurant }}">
         <input type="hidden" name="theDate" value = "{{theDate}}">
         <input type="hidden" name="theTime" value="{{theTime}}">
         <input type="hidden" name="thePeople" value="{{thePeople}}">
         </form>
         
-        <form id="DeltedBooking" action=" {{url_for('dateTimeTable.removeBooking')}} " method="POST">
+        <form id="DeltedBooking" action=" {{url_for('dateTimeTable.removeBooking', bid=theBid)}} " method="POST">
             <input type="hidden" name="theRestaurant" value="{{ theRestaurant.rid }}">
             <p>Deleted the booking:
             <button id="deleted" name="deleted" type="submit" class="btn btn-default" style="float: right">
