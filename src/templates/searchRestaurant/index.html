@@ -112,8 +112,8 @@ Front page
                             {% set myDirection = "showDirection("+(i+1)|string+")" %}
                                 <tr>
                                     <td>
-                                        <label class="label{{i}}" for="radio{{names[i]}}">{{names[i]}}</label>
-                                        <input id="radio{{names[i]}}" type="radio" class="radio{{i}}" name="theRestaurant" onclick={{myDirection}} value={{ids[i]}}>
+                                        <label class="label{{i}}" for="radio{{names[i]}} onclick={{myDirection}}">{{names[i]}}</label>
+                                        <input id="radio{{names[i]}}" type="radio" class="radio{{i}}" name="theRestaurant"  value={{ids[i]}}>
                                     </td>
                                     <td>
                                         <span id="opening_hours{{i}}" class="opnhrs" style="display: none;"> <span class="text-success">{{ opening_hours[i][0] }}</span>-
