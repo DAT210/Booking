@@ -1,8 +1,58 @@
 $(document).ready(function(){
 
+    $("label").on({
+        mouseenter: function(){
+            var className = this.className;
+            var changeThis = "#opening_hours" + className[className.length - 1];
+            console.log(changeThis)
+            $(changeThis).show();
+        },
+        mouseleave: function(){
+            var className = this.className;
+            var checkThis = ".radio" + className[className.length - 1];
+            if ($(checkThis).is(":checked")){
+                return
+            }
+            var changeThis = "#opening_hours" + className[className.length - 1];
+            $(changeThis).hide();
+        }
+    });
+
+    $("input[type=radio]").change(function(){
+        var className = this.className;
+        var changeThis = "#opening_hours" + className[className.length - 1];
+
+        $(".opnhrs").each(function(){
+            $(this).hide();
+        });
+
+        $(changeThis).show();
 
 
-    $("#selectNumberPeople").change(function(e)
+    });
+
+    $("#formSearchRestaurant").submit(function(event)
+    {
+        event.preventDefault();
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                $("#main").html(this.responseText);
+                $(".cp-spinner").remove();
+                $("#selectNumberPeople").change(function(e)
+                {
+                    selectNumberPeople(e,this)
+                });
+            }
+        };
+        xhttp.open("POST", "/dateAndTime/step_1");
+        var formData=$(this).serialize();
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+        xhttp.send(formData);
+    })
+
+
+    function selectNumberPeople(event,Item)
     {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -30,11 +80,11 @@ $(document).ready(function(){
             }
         };
         xhttp.open("POST", "/dateAndTime/step_2");
-        var data=$(this).val();
+        var data=$(Item).val();
         var formData="people="+data;
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send(formData);
-    });
+    }
     function selectDay(e,itemClicked)
     {
 
@@ -69,7 +119,7 @@ $(document).ready(function(){
 
 
 
-    $("#formConfirmBooking").submit(function(event)
+   function submitConfirmBooking(event,Item)
     {
         event.preventDefault();
         var xhttp = new XMLHttpRequest();
@@ -87,10 +137,10 @@ $(document).ready(function(){
         rid=$("#restaurantIdInfo").val();
         tables=$("#bookedTables").val();
         var formData="restaurant="+rid+"&people="+people+"&date="+date+"&time="+time+"&tables="+tables+"&";
-        formData+=$(this).serialize();
+        formData+=$(Item).serialize();
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
         xhttp.send(formData);
-    })
+    }
 
     function checkBooking(event)
     {
@@ -101,6 +151,10 @@ $(document).ready(function(){
                 $("#main").html(this.responseText);
                 $("#bookingInfo").show();
                 $(".cp-spinner").remove();
+                $("#formConfirmBooking").submit(function (e)
+                {
+                    submitConfirmBooking(e,this);
+                });
             }
         };
         console.log("tamere");
@@ -336,6 +390,7 @@ $(document).ready(function(){
     //     xhttp.setRequestHeader("Content-Type", "application/json");
     //     xhttp.send(formData);
     // }
+
 
 
 });

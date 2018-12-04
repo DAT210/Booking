@@ -33,8 +33,9 @@ def dateAndTimePeople():
     calendarOptions=buildSelectOptions(weeks)
     # from db_methods
     db_insert_full_day()
-    fullDays=daysDisabled(now,periods[0][0])
-    attendances=attendance(now,periods[0][0])
+    beginCalendar = now - timedelta(days=now.weekday())
+    fullDays=daysDisabled(beginCalendar,periods[0][0])
+    attendances=attendance(beginCalendar,periods[0][0])
     db_delete_full_day()
     templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays,attendances=attendances)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
@@ -64,17 +65,17 @@ def times():
     timesButton=buildTimesButtons(times,fullTimes=fullTimes)
     return render_template("dateTimeTable/time.html", times=timesButton)
 
-@dateTimeTable.route('/editPage/tableVisualisationEdit', methods=["POST"])
-def chooseTableSelectionEdit():
+@dateTimeTable.route('/editPage/tableVisualisationEdit/<bid>', methods=["POST"])
+def chooseTableSelectionEdit(bid):
     global selectedTime
     selectedTime=request.form["selectedTime"]
     theName=request.form["theName"]
     thePhone=request.form["thePhone"]
     theEmail=request.form["theEmail"]
     theRestaurant=Restaurant.fetchRestaurant(request.form["theRestaurant"])
-    return render_template("editPage/buttonsTableEdit.html",restaurant=theRestaurant,theName=theName,thePhone=thePhone,theEmail=theEmail)
+    return render_template("editPage/buttonsTableEdit.html",restaurant=theRestaurant,theName=theName,thePhone=thePhone,theEmail=theEmail,theBid=bid)
 
-@dateTimeTable.route('/editPage/checkBookingEdit/', methods=["POST"])
+@dateTimeTable.route('/editPage/checkBookingEdit/<bid>', methods=["POST"])
 def dateAndTimeCheckEdit(bid):
     theName   = request.form["theName"]
     thePhone  = request.form["thePhone"]
@@ -91,7 +92,7 @@ def dateAndTimeCheckEdit(bid):
     update_rest_book(bid, theDate, timeid, thePeople)
 
     return render_template("editPage/confirmDateEdit.html", theDate=theDate, theTime=theTime,
-                           theRestaurant=selectedRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
+                           theRestaurant=selectedRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail,theBid=bid)
 
 
 def update_rest_book(bid, theDate, timeid, thePeople):
@@ -173,9 +174,14 @@ def UpdateDateEdit():
     periods=mycursor.fetchall()
     periodsOptions=buildSelectOptions(periods)
     calendarOptions=buildSelectOptions(weeks)
-    templateCalendar=render_template('editPage/calendarEdit.html',numberCalendar=numbers, restaurant=restaurant)
+    db_insert_full_day()
+    beginCalendar = now - timedelta(days=now.weekday())
+    fullDays=daysDisabled(beginCalendar,periods[0][0])
+    attendances=attendance(beginCalendar,periods[0][0])
+    db_delete_full_day()
+    templateCalendar=render_template('editPage/calendarEdit.html',numberCalendar=numbers, restaurant=restaurant,fullDays=fullDays,attendances=attendances)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
-    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%d/%m/%Y")}
+    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%Y-%m-%d"),"restaurantCapacity":50}
     return jsonify(response)
 
 @dateTimeTable.route('/editPage/UpdatetimeEdit', methods=["POST"])
@@ -194,7 +200,7 @@ def UpdatetimeEdit():
     times=mycursor.fetchall()
     mycursor.execute("INSERT INTO booking_info VALUES(36,1,'01'),(37,2,'02'),(38,3,'03'),(39,3,'04'),(40,4,'05')")
     app.config["DATABASE"].commit()
-    mycursor.execute("INSERT INTO rest_book VALUES(1,36,'01','2018-11-25',5,3),(1,37,'02','2018-11-25',5,2),(1,38,'03','2018-11-25',5,2),(1,39,'04','2018-11-25',5,2),(1,40,'05','2018-11-25',5,3)")
+    mycursor.execute("INSERT INTO rest_book VALUES(1,36,'01','2018-12-09',5,3),(1,37,'02','2018-12-09',5,2),(1,38,'03','2018-12-09',5,2),(1,39,'04','2018-12-09',5,2),(1,40,'05','2018-12-09',5,3)")
     app.config["DATABASE"].commit()
     fullTimes=timeDisabled(dateSelected,times,period)
     mycursor.execute("DELETE FROM rest_book WHERE rest_book.bid IN(36,37,38,39,40)")
@@ -233,8 +239,8 @@ def changeCalendar():
     beginDate=request.form["beginDate"]
     period=request.form["period"]
     numbers=dayNumberCalendar(datetime.strptime(beginDate, '%d-%m-%Y'))
-    fullDays=daysDisabled(now,period)
-    attendances=attendance(now,period)
+    fullDays=daysDisabled(datetime.strptime(beginDate, '%d-%m-%Y'),period)
+    attendances=attendance(datetime.strptime(beginDate, '%d-%m-%Y'),period)
     templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays,attendances=attendances)
     response={"calendar" : templateCalendar,"currentDay":now.strftime("%Y-%m-%d"),"restaurantCapacity":50}
     return jsonify(response)
@@ -277,10 +283,9 @@ def isDayDisabled(listTable,day,period):
 
     return len(tableBooked)==tablesNumber
 
-def daysDisabled(currentDate,period):
+def daysDisabled(beginCalendar,period):
     listTable=["01","02","03","04","05"]
     daysDisabled=[]
-    beginCalendar = currentDate - timedelta(days=currentDate.weekday())
     for i in range(0,14):
         disabled=isDayDisabled(listTable,(beginCalendar+timedelta(days=i)).strftime("%Y-%m-%d"),period)
         daysDisabled+=[disabled]
@@ -304,9 +309,7 @@ def timeDisabled(selectedDate,times,period):
         timesDisabled+=[disabled]
     return timesDisabled
 
-def attendance(currentDate,period):
-
-    beginCalendar = currentDate - timedelta(days=currentDate.weekday())
+def attendance(beginCalendar,period):
     attendance=[]
     for i in range(0,14):
         attendance+=[db_get_attendance((beginCalendar+timedelta(days=i)).strftime("%Y-%m-%d"),period)]
