@@ -95,11 +95,11 @@ python src/__init__.py
 
 ## Contributors
 
-* **Alvaro Cachero** - Front-end & Back-end developer (https://github.com/alvcascac)
-* **David Galante** - Project configuration / Front-end & Back-end developer (https://github.com/folowbaka)
-* **Pol Grisart** - Front end & Back end developer (https://github.com/pol-grisart)
-* **Cihan Kart** - Front end developer (https://github.com/cihankart)
-* **Eskil Hellebø** - Database manager & back end developer (https://github.com/eskimil)
-* **Mats Moldesæter** - Project manager / Front-end & Back-end developer (https://github.com/230819)
-* **Tobias Sætre** - Front-end & Back-end developer (https://github.com/Tobiasns)
+* **Alvaro Cachero** - https://github.com/alvcascac
+* **David Galante** - https://github.com/folowbaka
+* **Pol Grisart** - https://github.com/pol-grisart
+* **Cihan Kart** - https://github.com/cihankart
+* **Eskil Hellebø** - https://github.com/eskimil
+* **Mats Moldesæter** - https://github.com/230819
+* **Tobias Sætre** - https://github.com/Tobiasns
 
