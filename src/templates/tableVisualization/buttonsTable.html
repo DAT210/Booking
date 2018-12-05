@@ -1,4 +1,3 @@
-
 <div class="col-lg-6" id="chooseTableVisualisation">
     <div class="card">
         <div class="card-header">
@@ -8,24 +7,14 @@
             <div class="card-text">
                 <div class="row">
                     <div class='col-lg-6'>
-                        <button class='btn btn-danger btnTime form-control'>Choose your table</button>
+                        <button id="chooseTable" class='btn btn-danger btnTime form-control'>Choose your table</button>
                     </div>
                     <div class='col-lg-6'>
-                        <button class='btn btn-danger btnTime form-control'>Get a random table</button>
+                        <button id="randomTable" class='btn btn-danger btnTime form-control'>Get a random table</button>
                     </div>
                 </div>
 
             </div>
         </div>
-    </div>
-</div>
-<div>
-    <div class="row">
-        <form id="formCheck" action="{{ url_for('confirmPage.dateAndTimeCheck') }}" method="POST">
-            <input type="hidden" name="theName" value="">
-            <input type="hidden" name="thePhone" value="">
-            <input type="hidden" name="theEmail" value="">
-            <input type="submit" id="checkBooking" name="checkBooking" class="btn btn-dark" value="Check booking">
-        </form>
     </div>
 </div>

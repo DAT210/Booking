@@ -1,3 +1,4 @@
+
 <div class="col-lg-6" id="chooseTableVisualisation">
     <div class="card">
         <div class="card-header">
@@ -7,10 +8,10 @@
             <div class="card-text">
                 <div class="row">
                     <div class='col-lg-6'>
-                        <button class='btn btn-danger form-control'>Choose your table</button>
+                        <button id="chooseTable" class='btn btn-danger form-control'>Choose your table</button>
                     </div>
                     <div class='col-lg-6'>
-                        <button class='btn btn-danger form-control'>Get a random table</button>
+                        <button id="randomTable" class='btn btn-danger form-control'>Get a random table</button>
                     </div>
                 </div>
 
@@ -20,11 +21,13 @@
 </div>
 <div>
     <div class="row">
-        <form id="formConfirmBooking" action="http://127.0.0.1:4001/{{ url_for('editPage.dateAndTimeCheckEdit') }}" method="POST">
+        <form id="formConfirmBooking" action="{{ url_for('editPage.dateAndTimeCheckEdit',bid=theBid) }}" method="POST">
             <input id="theNameEdit" type="hidden" name="theName" value="{{ theName }}">
             <input id="thePhoneEdit" type="hidden" name="thePhone" value="{{ thePhone }}">
             <input id="theEmailEdit" type="hidden" name="theEmail" value="{{ theEmail }}">
+            <input type="hidden" name="thebid" value = {{theBid}}>
             <input type="hidden" name="theRestaurant" value="{{restaurant.rid}}">
+            <input id="bookedTables" type="hidden" name="tables" value="">
             <input type="submit" id="checkBooking" name="checkBooking" class="btn btn-dark" value="Check booking">
         </form>
     </div>

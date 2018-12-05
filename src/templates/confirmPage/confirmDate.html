@@ -1,6 +1,4 @@
 
-
-
 <div class="row">
     <div class="col-lg-6" id="bookingInfo">
         <div class="card">
@@ -13,6 +11,7 @@
                     <input type="hidden" id="dateInfo" value="{{ theDate.strftime('%Y-%m-%d') }}">
                     <input type="hidden" id="peopleInfo" value="{{ thePeople }}">
                     <input type="hidden" id="timeInfo" value="{{ theTime }}">
+                    <input type="hidden" id="bookedTables" value="{{ theTables }}">
                     <label>Date: </label><p style="font-weight: bold; display: inline"> {{theDate.strftime('%d/%m/%Y')}} </p><br>
                     <label>Timeperiod: </label><p style="font-weight: bold; display: inline"> {{theTime}} </p><br>
                     <label>Restaurant: </label><p style="font-weight: bold; display: inline"> {{theRestaurant.name}}</p><br>
@@ -26,39 +25,38 @@
             </div>
         </div>
     </div>
-{% if theName=="" %}
-    <br>
-    <div class="col-lg-6 col-md-6 col-sm-6">
-        <form id="formConfirmBooking" action="{{ url_for('confirmPage.dateAndTimeCheck') }}" method="POST">
-            <label>Name </label><input type="text" name="theName" required><br>
-            <label>Phone </label><input type="tel" name="thePhone" required><br>
-            <label>Email </label><input type="email" name="theEmail" required><br>
-            <input type="submit" class="btn btn-dark" value="Confirm booking">
-        </form>
-    </div>
-{% else %}
-<div class="row">
-    <br>
-    <div class="col-lg-9 col-md-9 col-sm-9">
-        <h2>Your booking has been received!</h2>
-        <form id="formEditBooking" action="/booking/summary" method="POST">
-
-            <input type="hidden" name="theName" value={{theName}}>
-            <input type="hidden" name="thePhone" value={{thePhone}}>
-            <input type="hidden" name="theEmail" value={{theEmail}}>
-            <input type="hidden" name="theRestaurant" value={{theRestaurant.rid}}>
-            <input type="hidden" name="theDate" value = {{theDate}}>
-            <input type="hidden" name="theTime" value={{theTime}}>
-            <input type="hidden" name="thePeople" value={{thePeople}}>
-
-            <input type="submit" class="btn btn-dark" value="Edit your booking">
-        </form>
+    {% if theName=="" %}
         <br>
-        <form id="formMainPage" method="GET">
-            <input type="submit" class="btn btn-dark" value="Return to main page">
-        </form>
-    </div>
-</div>
-{% endif %}
-</div>
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <form id="formConfirmBooking" action="{{ url_for('confirmPage.dateAndTimeCheck') }}" method="POST">
+                <label>Name </label><input type="text" name="theName" required><br>
+                <label>Phone </label><input type="tel" name="thePhone" required><br>
+                <label>Email </label><input type="email" name="theEmail" required><br>
+                <input type="submit" class="btn btn-dark" value="Confirm booking">
+            </form>
+        </div>
+    {% else %}
+        <div class="row">
+            <br>
+            <div class="col-lg-9 col-md-9 col-sm-9">
+                <h2>Your booking has been received!</h2>
+                <form id="formEditBooking" action="/booking/summary/{{ theBid }}" method="POST">
 
+                    <input type="hidden" name="theName" value={{theName}}>
+                    <input type="hidden" name="thePhone" value={{thePhone}}>
+                    <input type="hidden" name="theEmail" value={{theEmail}}>
+                    <input type="hidden" name="theRestaurant" value={{theRestaurant.rid}}>
+                    <input type="hidden" name="theDate" value = {{theDate}}>
+                    <input type="hidden" name="theTime" value={{theTime}}>
+                    <input type="hidden" name="thePeople" value={{thePeople}}>
+
+                    <input type="submit" class="btn btn-dark" value="Edit your booking">
+                </form>
+                <br>
+                <form id="formMainPage" method="GET">
+                    <input type="submit" class="btn btn-dark" value="Return to main page">
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>

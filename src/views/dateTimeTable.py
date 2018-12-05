@@ -67,8 +67,8 @@ def changeCalendar():
     beginDate=request.form["beginDate"]
     period=request.form["period"]
     numbers=dayNumberCalendar(datetime.strptime(beginDate, '%d-%m-%Y'))
-    fullDays=daysDisabled(now,period)
-    attendances=attendance(now,period)
+    fullDays=daysDisabled(datetime.strptime(beginDate, '%d-%m-%Y'),period)
+    attendances=attendance(datetime.strptime(beginDate, '%d-%m-%Y'),period)
     templateCalendar=render_template('dateTimeTable/calendar.html',numberCalendar=numbers,fullDays=fullDays,attendances=attendances)
     response={"calendar" : templateCalendar,"currentDay":now.strftime("%Y-%m-%d"),"restaurantCapacity":50}
     return jsonify(response)

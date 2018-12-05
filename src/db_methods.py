@@ -25,6 +25,18 @@ def db_get_times(period):
     finally:
         mycursor.close()
 
+def db_get_time(timeid):
+    mycursor=app.config["DATABASE"].cursor()
+    try:
+        sql = "SELECT TIME_FORMAT(time,'%H:%i') FROM time_period WHERE timeid=%s"
+        mycursor.execute(sql, (str(timeid),))
+        times = mycursor.fetchall()
+        return times[0][0]
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
+
 def db_get_unavailable_tables(rid, time, date):
     timeid = db_get_timeid(time)
     mycursor = app.config["DATABASE"].cursor()
@@ -50,21 +62,8 @@ def db_get_timeid(time):
     finally:
         mycursor.close()
 
-def db_get_unavailable_tables(rid, time, date):
-    timeid = db_get_timeid(time)
-    mycursor = app.config["DATABASE"].cursor()
-    try:
-        sql = "SELECT tid FROM rest_book WHERE rid=%s AND timeid=%s AND date=%s"
-        mycursor.execute(sql, (rid, timeid, date))
-        unvTables = mycursor.fetchall()
-    except mysql.connector.Error as err:
-        print("Error: {}".format(err.msg))
-    finally:
-        mycursor.close()
-    return unvTables
 
-
-def db_insert_booking(rid, tid, date, timeid, cid,people, add_info):
+def db_insert_booking(rid, tables, date, timeid, cid,people, add_info):
     mycursor = app.config["DATABASE"].cursor()
     try:
         sql = "INSERT INTO booking_info (cid,additional_info) VALUES (%s, %s)"
@@ -72,8 +71,9 @@ def db_insert_booking(rid, tid, date, timeid, cid,people, add_info):
 
         bid = db_get_bid(cid)
 
-        sql = "INSERT INTO rest_book VALUES (%s, %s, %s, %s, %s,%s)"
-        mycursor.execute(sql, (str(rid), str(bid), str(tid), str(date), str(timeid),str(people)))
+        for t in tables.split(","):
+            sql = "INSERT INTO rest_book VALUES (%s, %s, %s, %s, %s,%s)"
+            mycursor.execute(sql, (str(rid), str(bid), t, str(date), str(timeid),str(people)))
 
         app.config["DATABASE"].commit()
     except mysql.connector.Error as err:
@@ -81,12 +81,76 @@ def db_insert_booking(rid, tid, date, timeid, cid,people, add_info):
     finally:
         mycursor.close()
 
+def db_insert_customerInfo(bid,name,phone,email):
+    mycursor = app.config["DATABASE"].cursor()
+    try:
+        pass
+        sql = "UPDATE booking_info SET additional_info = %s WHERE bid=%s"
+        mycursor.execute(sql, (str(name)+"/"+str(phone)+"/"+str(email), bid))
+        app.config["DATABASE"].commit()
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+        print("done")
+    finally:
+        mycursor.close()
+        print("done2")
+
+
+def db_get_customerInfo(bid):
+    mycursor = app.config["DATABASE"].cursor()
+    print("bid ",bid)
+    try:
+        sql = "SELECT additional_info FROM booking_info WHERE bid=%s;"
+        mycursor.execute(sql, (str(bid),))
+        additional_info = mycursor.fetchall()
+        print("lol",additional_info)
+        return additional_info
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
 
 def db_get_bid(cid):
     mycursor = app.config["DATABASE"].cursor()
     try:
         sql = "SELECT bid FROM booking_info WHERE cid=%s;"
         mycursor.execute(sql, (str(cid),))
+        bid = mycursor.fetchall()
+        return bid[len(bid) - 1][0] # the last inserted booking for that customer
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
+
+def db_get_restBookInfo(bid):
+    mycursor = app.config["DATABASE"].cursor()
+    try:
+        sql = "SELECT rid, tid, date, timeid, people FROM rest_book WHERE bid=%s;"
+        mycursor.execute(sql, (str(bid),))
+        info = mycursor.fetchall()
+        return info
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
+
+def get_restaurantName(rid):
+    mycursor = app.config["DATABASE"].cursor()
+    try:
+        sql = "SELECT name FROM restaurant WHERE rid=%s;"
+        mycursor.execute(sql, (str(rid),))
+        name = mycursor.fetchall()
+        return name[0][0]
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
+
+def db_get_last_bid():
+    mycursor = app.config["DATABASE"].cursor()
+    try:
+        sql = "SELECT bid FROM booking_info ORDER BY bid DESC LIMIT 1;"
+        mycursor.execute(sql)
         bid = mycursor.fetchall()
         return bid[len(bid) - 1][0] # the last inserted booking for that customer
     except mysql.connector.Error as err:
@@ -120,7 +184,7 @@ def db_insert_full_day(): # Default fullDay
             "INSERT INTO booking_info VALUES(30,1,'01'),(31,2,'02'),(32,3,'03'),(33,3,'04'),(34,4,'05'),(50,5,'05'),(51,6,'05'),(52,7,'05'),(53,8,'05'),(54,5,'05'),(55,5,'05'),(56,5,'05'),(57,5,'05'),(58,5,'05'),(59,5,'05'),(60,5,'05'),(61,5,'05'),(62,5,'05')")
         app.config["DATABASE"].commit()
         mycursor.execute(
-            "INSERT INTO rest_book VALUES(1,30,'01','2018-12-01',1,2),(1,31,'02','2018-12-01',1,2),(1,32,'03','2018-12-01',1,3),(1,33,'04','2018-12-01',1,3),(1,34,'05','2018-12-01',1,3),(1,50,'05','2018-12-02',1,6),(1,51,'05','2018-12-02',1,4),(1,52,'05','2018-12-02',1,4),(1,53,'05','2018-12-02',1,6),(1,54,'05','2018-12-02',1,3),(1,55,'05','2018-12-02',1,3),(1,56,'05','2018-12-02',1,3),(1,57,'05','2018-12-03',1,8),(1,58,'05','2018-12-03',1,8),(1,59,'05','2018-12-03',1,8),(1,60,'05','2018-12-03',1,8),(1,61,'05','2018-12-03',1,8),(1,62,'05','2018-12-03',1,3)")
+            "INSERT INTO rest_book VALUES(1,30,'01','2018-12-08',1,2),(1,31,'02','2018-12-08',1,2),(1,32,'03','2018-12-08',1,3),(1,33,'04','2018-12-08',1,3),(1,34,'05','2018-12-08',1,3),(1,50,'05','2018-12-09',1,6),(1,51,'05','2018-12-09',1,4),(1,52,'05','2018-12-09',1,4),(1,53,'05','2018-12-09',1,6),(1,54,'05','2018-12-09',1,3),(1,55,'05','2018-12-09',1,3),(1,56,'05','2018-12-09',1,3),(1,57,'05','2018-12-10',1,8),(1,58,'05','2018-12-10',1,8),(1,59,'05','2018-12-10',1,8),(1,60,'05','2018-12-10',1,8),(1,61,'05','2018-12-10',1,8),(1,62,'05','2018-12-10',1,3)")
         app.config["DATABASE"].commit()
     except mysql.connector.Error as err:
         print("Error: {}".format(err.msg))
@@ -163,3 +227,33 @@ def db_get_attendance(date,period):
         print("Error: {}".format(err.msg))
     finally:
         mycursor.close()
+
+def db_get_bookingInfo(bid):
+    mycursor=app.config["DATABASE"].cursor()
+    try:
+        sql = "SELECT timeid,TIME_FORMAT(time,'%H:%i'),date,people FROM rest_book WHERE bid=%s"
+        mycursor.execute(sql, (str(bid),))
+        info = mycursor.fetchall()
+        return info
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+    finally:
+        mycursor.close()
+# def db_check_tables(rid, date, timeid, tableids):
+#     mycursor = app.config['DATABASE'].cursor()
+#     print(rid)
+#     print(date)
+#     print(timeid)
+#     try:
+#         sql = "SELECT bid FROM rest_book WHERE rid=%s AND date=%s AND timeid=%s AND tid IN {0}".format(tuple(tableids))
+#         print(sql)
+#         mycursor.execute(sql, (str(rid), str(date), str(timeid)))
+#         f = mycursor.fetchall()
+#         print(f)
+#         if len(f) != 0:
+#             return 0
+#         return 1
+#     except mysql.connector.Error as err:
+#         print("Error: {}".format(err.msg))
+#     finally:
+#         mycursor.close()

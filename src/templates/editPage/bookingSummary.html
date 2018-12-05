@@ -10,14 +10,17 @@
                     </div>
                 </div>
                 <div id="summaryPage" class="row">
-                    <div class=" offset-lg-2 col-lg-4" id="bookingInfoEdit">
+                    <div class="col-lg-3">
+
+                    </div>
+                    <div class="col-lg-3" id="bookingInfoEdit">
                         <div class="card">
                             <div class="card-header">
                                 Booking summary
                             </div>
                             <div class="card-body">
                                 <div class="card-text" style="text-align:left">
-                                    <label>Restaurant: </label><p style="font-weight: bold; display: inline"> {{theRestaurant.name}}</p><br>
+                                    <label>Restaurant: </label><p style="font-weight: bold; display: inline"> {{ theRestaurantName}}</p><br>
                                     <label>Name: </label><p style="font-weight: bold; display: inline"> {{theName}}</p><br>
                                     <label>Phone: </label><p style="font-weight: bold; display: inline"> {{thePhone}}</p><br>
                                     <label>Email: </label><p style="font-weight: bold; display: inline"> {{theEmail}}</p><br>
@@ -33,27 +36,26 @@
                         <br>
                     </div>
 
-                    <div>
-                        <form id="EditBooking" action="/booking/updatebooking" method="POST">
-                            <p>
-                                <button id="edit" name="edit" type="submit" class="btn btn-dark" style="float: right">Edit the booking:
+                    <div class="col-lg-3">
+                        <form id="EditBooking" action="/booking/updatebooking/{{ theBid }}" method="POST">
+                            <div class="form-group">
+                                <button id="edit" name="edit" type="submit" class="btn btn-dark col-lg-12" style="float: right">Edit the booking:
                                 </button>
-                            </p>
+                            </div>
                             <br>
                             <input type="hidden" name="theName" value="{{theName}}">
                             <input type="hidden" name="thePhone" value="{{thePhone}}">
                             <input type="hidden" name="theEmail" value="{{theEmail}}">
-                            <input type="hidden" name="theRestaurant" value="{{ theRestaurant.rid }}">
+                            <input type="hidden" name="theRestaurant" value="{{ theRestaurant}}">
                             <input type="hidden" name="theDate" value = "{{theDate}}">
                             <input type="hidden" name="theTime" value="{{theTime}}">
                             <input type="hidden" name="thePeople" value="{{thePeople}}">
                         </form>
-
-                        <form id="DeltedBooking" action=" {{url_for('editPage.removeBooking')}} " method="POST">
-                            <input type="hidden" name="theRestaurant" value="{{ theRestaurant.rid }}">
-                            <p>
-                                <button id="deleted" name="deleted" type="submit" class="btn btn-danger" style="float: right">Delete the booking:
+                        <form id="DeleteBooking" action="/booking/removebooking/{{ theBid  }}" method="POST">
+                            <input type="hidden" name="theRestaurant" value="{{ theRestaurant}}">
+                            <div class="form-group">
+                                <button id="deleted" name="deleted" type="submit" class="btn btn-danger col-lg-12" style="float: right">Delete the booking:
                                 </button>
-                            </p>
+                            </div>
                         </form>
                     </div>

@@ -3,38 +3,54 @@ editPage = Blueprint('editPage', __name__,url_prefix="/editpage")
 from src import app
 from src.models import Restaurant
 from datetime import datetime, timedelta
+import mysql.connector
 from src.views.dateTimeTable import calculCalendarWeeks,dayNumberCalendar,daysDisabled,timeDisabled
 from src.templatebuild import buildSelectOptions,buildTimesButtons
-from src.db_methods import db_get_times
+from src.db_methods import db_get_time,db_get_restBookInfo,get_restaurantName,db_get_customerInfo,db_get_timeid,db_get_times,db_get_attendance,db_insert_full_day,db_delete_full_day
 
-@editPage.route('/bookingsummary',methods=["POST"])
-def bookingSummary():
-    print(request.form)
-    theName = request.form["theName"]
-    thePhone = request.form["thePhone"]
-    theEmail = request.form["theEmail"]
-    theRestaurant = Restaurant.fetchRestaurant(request.form["theRestaurant"])
-    theDate = request.form["theDate"]
-    thePeople = request.form["thePeople"]
-    theTime=request.form["theTime"]
-
+@editPage.route('/bookingsummary/<bid>',methods=["POST"])
+def bookingSummary(bid):
+    info = db_get_customerInfo(bid)
+    info_list = info[0][0].split("/")
+    theName = info_list[0]
+    thePhone = info_list[1]
+    theEmail = info_list[2]
+    restBookInfo = db_get_restBookInfo(bid)
+    theRestaurant = restBookInfo[0][0]
+    theDate = restBookInfo[0][2]
+    theTimeId= restBookInfo[0][3]
+    thePeople = restBookInfo[0][4]
+    theTime = db_get_time(theTimeId)
+    theRestaurantName = get_restaurantName(theRestaurant)
+    theBid = bid
+    print("rid2 ", theRestaurant)
     return render_template("editPage/bookingSummary.html", theDate=theDate, theTime=theTime,
-                           theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
-@editPage.route('/removeBooking',methods=["POST"])
-def removeBooking():
-    theName = request.form["theName"]
-    thePhone = request.form["thePhone"]
-    theEmail = request.form["theEmail"]
-    theRestaurant = Restaurant.fetchRestaurant(request.form["theRestaurant"])
-    theDate = request.form["theDate"]
-    thePeople = request.form["thePeople"]
-    theTime=request.form["theTime"]
+                           theRestaurant=theRestaurant, theName=theName, thePeople=thePeople,
+                           thePhone=thePhone, theEmail=theEmail, theBid=theBid,theRestaurantName=theRestaurantName)
+@editPage.route('/removebooking/<bid>',methods=["POST"])
+def removeBooking(bid):
+    remove_rest_book(bid)
+    print(bid)
+    return render_template("editPage/deletePage.html")
 
-    return render_template("editPage/bookingSummary.html", theDate=theDate, theTime=theTime,
-                           theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
+def remove_rest_book(bid):
+    conn = app.config["DATABASE"]
+    mycursor=conn.cursor()
 
-@editPage.route('/updatebooking',methods=["POST"])
-def updateBooking():
+    try:
+        pass
+        query = "DELETE FROM rest_book WHERE bid = %s"
+        mycursor.execute(query, (str(bid),))
+        conn.commit()
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+        print("done")
+    finally:
+        mycursor.close()
+        print("done2")
+
+@editPage.route('/updatebooking/<bid>',methods=["POST"])
+def updateBooking(bid):
     theDate = request.form["theDate"]
     thePeople = request.form["thePeople"]
     theTime=request.form["theTime"]
@@ -42,9 +58,12 @@ def updateBooking():
     thePhone = request.form["thePhone"]
     theEmail = request.form["theEmail"]
     theRestaurant=request.form["theRestaurant"]
+    print("restaurant: ",theRestaurant)
+    theBid = bid
 
     return render_template("editPage/update_rest_book.html", thePeople=thePeople,theDate=theDate,
-                           theTime=theTime,theName=theName,thePhone=thePhone, theEmail=theEmail,theRestaurant=theRestaurant)
+                           theTime=theTime,theName=theName,thePhone=thePhone, theEmail=theEmail,
+                           theRestaurant=theRestaurant, theBid=theBid)
 
 
 @editPage.route('/updatenumberpeople', methods=["POST"])
@@ -68,9 +87,14 @@ def UpdateDateEdit():
     periods=mycursor.fetchall()
     periodsOptions=buildSelectOptions(periods)
     calendarOptions=buildSelectOptions(weeks)
-    templateCalendar=render_template('editPage/calendarEdit.html',numberCalendar=numbers, restaurant=restaurant)
+    db_insert_full_day()
+    beginCalendar = now - timedelta(days=now.weekday())
+    fullDays=daysDisabled(beginCalendar,periods[0][0])
+    attendances=attendance(beginCalendar,periods[0][0])
+    db_delete_full_day()
+    templateCalendar=render_template('editPage/calendarEdit.html',numberCalendar=numbers, restaurant=restaurant,fullDays=fullDays,attendances=attendances)
     templateButtonsCalendar=render_template("dateTimeTable/rowCalendarButtons.html",periods=periodsOptions,weeks=calendarOptions)
-    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%d/%m/%Y")}
+    response={"calendar" : templateCalendar,"buttonsCalendar" : templateButtonsCalendar,"people" : people,"currentDay":now.strftime("%Y-%m-%d"),"restaurantCapacity":50}
     return jsonify(response)
 
 @editPage.route('/updatetimeedit', methods=["POST"])
@@ -98,18 +122,18 @@ def UpdatetimeEdit():
     timesButton=buildTimesButtons(times,fullTimes=fullTimes)
     return render_template("editPage/timeEdit.html", times=timesButton,restaurant=restaurant)
 
-@editPage.route('/tablevisualisationedit', methods=["POST"])
-def chooseTableSelectionEdit():
+@editPage.route('/tablevisualisationedit/<bid>', methods=["POST"])
+def chooseTableSelectionEdit(bid):
     global selectedTime
     selectedTime=request.form["selectedTime"]
     theName=request.form["theName"]
     thePhone=request.form["thePhone"]
     theEmail=request.form["theEmail"]
     theRestaurant=Restaurant.fetchRestaurant(request.form["theRestaurant"])
-    return render_template("editPage/buttonsTableEdit.html",restaurant=theRestaurant,theName=theName,thePhone=thePhone,theEmail=theEmail)
+    return render_template("editPage/buttonsTableEdit.html",restaurant=theRestaurant,theName=theName,thePhone=thePhone,theEmail=theEmail,theBid=bid)
 
-@editPage.route('/checkbookingedit', methods=["POST"])
-def dateAndTimeCheckEdit():
+@editPage.route('/checkbookingedit/<bid>', methods=["POST"])
+def dateAndTimeCheckEdit(bid):
     theName   = request.form["theName"]
     thePhone  = request.form["thePhone"]
     theEmail  = request.form["theEmail"]
@@ -118,9 +142,38 @@ def dateAndTimeCheckEdit():
     theDate = request.form["theDate"]
     thePeople = request.form["thePeople"]
     theTime=request.form["theTime"]
+    # bid = request.form["theBid"]
+    # date = theDate.strftime('%Y-%m-%d')
+    timeid = db_get_timeid(theTime)
 
-    # if (theEmail != ''):
-    #     send_mail(theName,theEmail,theRestaurant,theAddress,theDate,thePeople,theTime)
+    update_rest_book(bid, theDate, timeid, thePeople)
 
     return render_template("editPage/confirmDateEdit.html", theDate=theDate, theTime=theTime,
-                           theRestaurant=selectedRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail)
+                           theRestaurant=selectedRestaurant, theName=theName, thePeople=thePeople, thePhone=thePhone, theEmail=theEmail,theBid=bid)
+
+def update_rest_book(bid, theDate, timeid, thePeople):
+    conn = app.config["DATABASE"]
+    mycursor=conn.cursor()
+    try:
+        pass
+        query =  "UPDATE rest_book SET date = %s, timeid = %s, people = %s WHERE bid = %s"
+        print(theDate)
+        print(timeid)
+        print(thePeople)
+        print(bid)
+
+        mycursor.execute(query, (str(theDate), str(timeid), str(thePeople), str(bid),))
+        conn.commit()
+
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err.msg))
+        print("done")
+    finally:
+        mycursor.close()
+        print("done2")
+
+def attendance(beginCalendar,period):
+    attendance=[]
+    for i in range(0,14):
+        attendance+=[db_get_attendance((beginCalendar+timedelta(days=i)).strftime("%Y-%m-%d"),period)]
+    return attendance

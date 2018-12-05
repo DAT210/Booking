@@ -28,10 +28,12 @@ from src.views.searchRestaurant import searchRestaurant
 from src.views.dateTimeTable import dateTimeTable
 from src.views.confirmPage import confirmPage
 from src.views.tableVisualization import tableVisualization
+from src.views.editPage import  editPage
 app.register_blueprint(searchRestaurant)
 app.register_blueprint(dateTimeTable)
 app.register_blueprint(confirmPage)
 app.register_blueprint(tableVisualization)
+app.register_blueprint(editPage)
 #from src.booking_api.unavailable_tables import UnavailableTables
 
 app.config.update(
