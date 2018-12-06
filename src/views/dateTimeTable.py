@@ -134,7 +134,7 @@ def summaryEditPage(bid):
     print("rid2 ", theRestaurant)
     return render_template("editPage/summaryEditPage.html", theDate=theDate, theTime=theTime,
                            theRestaurant=theRestaurant, theName=theName, thePeople=thePeople, 
-                           thePhone=thePhone, theEmail=theEmail, theBid=theBid)
+                           thePhone=thePhone, theEmail=theEmail, theBid=theBid, theRestaurantName=theRestaurantName)
 
 @dateTimeTable.route('/editPage/updateBooking/<bid>', methods=["POST"])
 def updateBooking(bid):
